@@ -1,4 +1,4 @@
-#include "krpci.hpp"
+#include "krpci/krpci.hpp"
 
 using namespace std;
 
@@ -6,7 +6,8 @@ KRPCI::KRPCI(string name, string ip, int port, int streamPort)
   : name_(name),
     ip_(ip),
     port_(port),
-    streamPort_(streamPort)
+    streamPort_(streamPort),
+    connected_(false)
 {
   name_.resize(32);
   id_.resize(16);
@@ -23,6 +24,22 @@ void KRPCI::SetName(std::string name)
   name_ = name;
   name_.resize(32);
 }
+
+void KRPCI::SetIP(std::string ip)
+{
+  ip_ = ip;
+}
+
+void KRPCI::SetPort(int port)
+{
+  port_ = port;
+}
+
+void KRPCI::SetStreamPort(int streamPort)
+{
+  streamPort_ = streamPort;
+}
+
 
 bool KRPCI::Connect()
 {
@@ -133,6 +150,7 @@ bool KRPCI::Connect()
 	  haveReceivedAck = true;
       }
     }
+  connected_ = true;
   boost::thread stream_thread(boost::bind(&KRPCI::streamThreadFunc, this));
   return true;
 }
@@ -141,11 +159,12 @@ bool KRPCI::Close()
 {
   close(socket_);
   close(streamSocket_);
+  connected_ = false;
 }
 
 void KRPCI::streamThreadFunc()
 {
-  while (true)
+  while (this->connected_)
     {
       this->getStreamResponsesFromStreamMessage();
     }
@@ -153,6 +172,8 @@ void KRPCI::streamThreadFunc()
 
 bool KRPCI::CreateStream(std::string streamName, krpc::Request req, boost::function<void (krpc::Response&)> fptr)
 {
+  if (!connected_)
+    return false;
   krpc::Request streamReq;
   krpc::Response response;
   krpc::Argument* argument;
@@ -186,6 +207,8 @@ bool KRPCI::CreateStream(std::string streamName, krpc::Request req, boost::funct
 
 bool KRPCI::RemoveStream(std::string streamName)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   krpc::Argument* argument;
@@ -240,6 +263,8 @@ bool KRPCI::createRequestString(krpc::Request req, std::string& str)
 
 bool KRPCI::getResponseFromRequest(krpc::Request req, krpc::Response& res)
 {
+  if (!connected_)
+    return false;
   string message;
   message.reserve(40);
   bool retVal = true;
@@ -280,12 +305,14 @@ bool KRPCI::getResponseFromRequest(krpc::Request req, krpc::Response& res)
 
 bool KRPCI::getStreamResponsesFromStreamMessage()
 {
+  if (!connected_)
+    return false;
   bool retVal = true;
   char buf[maxBufferSize];
   memset(buf,0,maxBufferSize);
   int bytesreceived =0;
   if ( (bytesreceived=recv(streamSocket_,buf,maxBufferSize-1,0)) <= 0) {
-    perror("get stream responses from stream message : stream socket receive");
+    //perror("get stream responses from stream message : stream socket receive");
     return false;
   }
   //std::cout << "Socket received # bytes = " << bytesreceived << endl;

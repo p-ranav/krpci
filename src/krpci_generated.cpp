@@ -1,4 +1,4 @@
-#include "krpci.hpp"
+#include "krpci/krpci.hpp"
 using namespace std;
 
 bool KRPCI::ClearTarget_createRequest(krpc::Request& request)
@@ -10,6 +10,8 @@ bool KRPCI::ClearTarget_createRequest(krpc::Request& request)
 
 bool KRPCI::ClearTarget()
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ClearTarget_createRequest(request);
@@ -24,6 +26,7 @@ bool KRPCI::ClearTarget()
     }
   return true;
 }
+
 
 bool KRPCI::WarpTo_createRequest(double UT, float maxRate, krpc::Request& request)
 {
@@ -43,6 +46,8 @@ bool KRPCI::WarpTo_createRequest(double UT, float maxRate, krpc::Request& reques
 
 bool KRPCI::WarpTo(double UT, float maxRate)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::WarpTo_createRequest(UT, maxRate, request);
@@ -57,6 +62,7 @@ bool KRPCI::WarpTo(double UT, float maxRate)
     }
   return true;
 }
+
 
 bool KRPCI::TransformPosition_createRequest(double position_x, double position_y, double position_z, uint64_t from, uint64_t to, krpc::Request& request)
 {
@@ -89,6 +95,8 @@ bool KRPCI::TransformPosition_createRequest(double position_x, double position_y
 
 bool KRPCI::TransformPosition(double position_x, double position_y, double position_z, uint64_t from, uint64_t to, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::TransformPosition_createRequest(position_x, position_y, position_z, from, to, request);
@@ -100,10 +108,16 @@ bool KRPCI::TransformPosition(double position_x, double position_y, double posit
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      TransformPosition_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::TransformPosition_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -138,6 +152,8 @@ bool KRPCI::TransformDirection_createRequest(double direction_x, double directio
 
 bool KRPCI::TransformDirection(double direction_x, double direction_y, double direction_z, uint64_t from, uint64_t to, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::TransformDirection_createRequest(direction_x, direction_y, direction_z, from, to, request);
@@ -149,10 +165,16 @@ bool KRPCI::TransformDirection(double direction_x, double direction_y, double di
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      TransformDirection_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::TransformDirection_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -187,6 +209,8 @@ bool KRPCI::TransformRotation_createRequest(double rotation_x, double rotation_y
 
 bool KRPCI::TransformRotation(double rotation_x, double rotation_y, double rotation_z, uint64_t from, uint64_t to, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::TransformRotation_createRequest(rotation_x, rotation_y, rotation_z, from, to, request);
@@ -198,10 +222,16 @@ bool KRPCI::TransformRotation(double rotation_x, double rotation_y, double rotat
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      TransformRotation_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::TransformRotation_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -245,6 +275,8 @@ bool KRPCI::TransformVelocity_createRequest(double position_x, double position_y
 
 bool KRPCI::TransformVelocity(double position_x, double position_y, double position_z, double velocity_x, double velocity_y, double velocity_z, uint64_t from, uint64_t to, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::TransformVelocity_createRequest(position_x, position_y, position_z, velocity_x, velocity_y, velocity_z, from, to, request);
@@ -256,10 +288,16 @@ bool KRPCI::TransformVelocity(double position_x, double position_y, double posit
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      TransformVelocity_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::TransformVelocity_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -301,6 +339,8 @@ bool KRPCI::DrawDirection_createRequest(double direction_x, double direction_y, 
 
 bool KRPCI::DrawDirection(double direction_x, double direction_y, double direction_z, uint64_t referenceFrame, double color_x, double color_y, double color_z, float length)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DrawDirection_createRequest(direction_x, direction_y, direction_z, referenceFrame, color_x, color_y, color_z, length, request);
@@ -316,6 +356,7 @@ bool KRPCI::DrawDirection(double direction_x, double direction_y, double directi
   return true;
 }
 
+
 bool KRPCI::ClearDirections_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -325,6 +366,8 @@ bool KRPCI::ClearDirections_createRequest(krpc::Request& request)
 
 bool KRPCI::ClearDirections()
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ClearDirections_createRequest(request);
@@ -340,6 +383,7 @@ bool KRPCI::ClearDirections()
   return true;
 }
 
+
 bool KRPCI::get_ActiveVessel_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -349,6 +393,8 @@ bool KRPCI::get_ActiveVessel_createRequest(krpc::Request& request)
 
 bool KRPCI::get_ActiveVessel(uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_ActiveVessel_createRequest(request);
@@ -360,10 +406,16 @@ bool KRPCI::get_ActiveVessel(uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      get_ActiveVessel_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::get_ActiveVessel_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -376,6 +428,8 @@ bool KRPCI::get_Vessels_createRequest(krpc::Request& request)
 
 bool KRPCI::get_Vessels(std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_Vessels_createRequest(request);
@@ -387,16 +441,22 @@ bool KRPCI::get_Vessels(std::vector<uint64_t>& return_vector)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      get_Vessels_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::get_Vessels_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -410,6 +470,8 @@ bool KRPCI::get_Bodies_createRequest(krpc::Request& request)
 
 bool KRPCI::get_Bodies(krpc::Dictionary& return_dict)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_Bodies_createRequest(request);
@@ -425,6 +487,11 @@ bool KRPCI::get_Bodies(krpc::Dictionary& return_dict)
   return true;
 }
 
+bool KRPCI::get_Bodies_parseResponse(krpc::Response response, krpc::Dictionary& return_dict)
+{
+  return true;
+}
+
 bool KRPCI::get_TargetBody_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -434,6 +501,8 @@ bool KRPCI::get_TargetBody_createRequest(krpc::Request& request)
 
 bool KRPCI::get_TargetBody(uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_TargetBody_createRequest(request);
@@ -445,10 +514,16 @@ bool KRPCI::get_TargetBody(uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      get_TargetBody_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::get_TargetBody_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -468,6 +543,8 @@ bool KRPCI::set_TargetBody_createRequest(uint64_t value, krpc::Request& request)
 
 bool KRPCI::set_TargetBody(uint64_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::set_TargetBody_createRequest(value, request);
@@ -483,6 +560,7 @@ bool KRPCI::set_TargetBody(uint64_t value)
   return true;
 }
 
+
 bool KRPCI::get_TargetVessel_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -492,6 +570,8 @@ bool KRPCI::get_TargetVessel_createRequest(krpc::Request& request)
 
 bool KRPCI::get_TargetVessel(uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_TargetVessel_createRequest(request);
@@ -503,10 +583,16 @@ bool KRPCI::get_TargetVessel(uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      get_TargetVessel_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::get_TargetVessel_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -526,6 +612,8 @@ bool KRPCI::set_TargetVessel_createRequest(uint64_t value, krpc::Request& reques
 
 bool KRPCI::set_TargetVessel(uint64_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::set_TargetVessel_createRequest(value, request);
@@ -541,6 +629,7 @@ bool KRPCI::set_TargetVessel(uint64_t value)
   return true;
 }
 
+
 bool KRPCI::get_TargetDockingPort_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -550,6 +639,8 @@ bool KRPCI::get_TargetDockingPort_createRequest(krpc::Request& request)
 
 bool KRPCI::get_TargetDockingPort(uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_TargetDockingPort_createRequest(request);
@@ -561,10 +652,16 @@ bool KRPCI::get_TargetDockingPort(uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      get_TargetDockingPort_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::get_TargetDockingPort_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -584,6 +681,8 @@ bool KRPCI::set_TargetDockingPort_createRequest(uint64_t value, krpc::Request& r
 
 bool KRPCI::set_TargetDockingPort(uint64_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::set_TargetDockingPort_createRequest(value, request);
@@ -599,6 +698,7 @@ bool KRPCI::set_TargetDockingPort(uint64_t value)
   return true;
 }
 
+
 bool KRPCI::get_UT_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -608,6 +708,8 @@ bool KRPCI::get_UT_createRequest(krpc::Request& request)
 
 bool KRPCI::get_UT(double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_UT_createRequest(request);
@@ -619,9 +721,15 @@ bool KRPCI::get_UT(double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      get_UT_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::get_UT_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -634,6 +742,8 @@ bool KRPCI::get_G_createRequest(krpc::Request& request)
 
 bool KRPCI::get_G(float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_G_createRequest(request);
@@ -645,9 +755,15 @@ bool KRPCI::get_G(float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      get_G_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::get_G_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -660,6 +776,8 @@ bool KRPCI::get_RailsWarpFactor_createRequest(krpc::Request& request)
 
 bool KRPCI::get_RailsWarpFactor(int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_RailsWarpFactor_createRequest(request);
@@ -675,6 +793,11 @@ bool KRPCI::get_RailsWarpFactor(int32_t& return_value)
   return true;
 }
 
+bool KRPCI::get_RailsWarpFactor_parseResponse(krpc::Response response, int32_t& return_value)
+{
+  return true;
+}
+
 bool KRPCI::set_RailsWarpFactor_createRequest(int32_t value, krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -687,6 +810,8 @@ bool KRPCI::set_RailsWarpFactor_createRequest(int32_t value, krpc::Request& requ
 
 bool KRPCI::set_RailsWarpFactor(int32_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::set_RailsWarpFactor_createRequest(value, request);
@@ -702,6 +827,7 @@ bool KRPCI::set_RailsWarpFactor(int32_t value)
   return true;
 }
 
+
 bool KRPCI::get_PhysicsWarpFactor_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -711,6 +837,8 @@ bool KRPCI::get_PhysicsWarpFactor_createRequest(krpc::Request& request)
 
 bool KRPCI::get_PhysicsWarpFactor(int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_PhysicsWarpFactor_createRequest(request);
@@ -726,6 +854,11 @@ bool KRPCI::get_PhysicsWarpFactor(int32_t& return_value)
   return true;
 }
 
+bool KRPCI::get_PhysicsWarpFactor_parseResponse(krpc::Response response, int32_t& return_value)
+{
+  return true;
+}
+
 bool KRPCI::set_PhysicsWarpFactor_createRequest(int32_t value, krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -738,6 +871,8 @@ bool KRPCI::set_PhysicsWarpFactor_createRequest(int32_t value, krpc::Request& re
 
 bool KRPCI::set_PhysicsWarpFactor(int32_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::set_PhysicsWarpFactor_createRequest(value, request);
@@ -753,6 +888,7 @@ bool KRPCI::set_PhysicsWarpFactor(int32_t value)
   return true;
 }
 
+
 bool KRPCI::get_WarpMode_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -762,6 +898,8 @@ bool KRPCI::get_WarpMode_createRequest(krpc::Request& request)
 
 bool KRPCI::get_WarpMode(int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_WarpMode_createRequest(request);
@@ -777,6 +915,11 @@ bool KRPCI::get_WarpMode(int32_t& return_value)
   return true;
 }
 
+bool KRPCI::get_WarpMode_parseResponse(krpc::Response response, int32_t& return_value)
+{
+  return true;
+}
+
 bool KRPCI::get_WarpRate_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -786,6 +929,8 @@ bool KRPCI::get_WarpRate_createRequest(krpc::Request& request)
 
 bool KRPCI::get_WarpRate(float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_WarpRate_createRequest(request);
@@ -797,9 +942,15 @@ bool KRPCI::get_WarpRate(float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      get_WarpRate_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::get_WarpRate_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -812,6 +963,8 @@ bool KRPCI::get_FARAvailable_createRequest(krpc::Request& request)
 
 bool KRPCI::get_FARAvailable(bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_FARAvailable_createRequest(request);
@@ -827,6 +980,11 @@ bool KRPCI::get_FARAvailable(bool& return_value)
   return true;
 }
 
+bool KRPCI::get_FARAvailable_parseResponse(krpc::Response response, bool& return_value)
+{
+  return true;
+}
+
 bool KRPCI::get_RemoteTechAvailable_createRequest(krpc::Request& request)
 {
   request.set_service("SpaceCenter");
@@ -836,6 +994,8 @@ bool KRPCI::get_RemoteTechAvailable_createRequest(krpc::Request& request)
 
 bool KRPCI::get_RemoteTechAvailable(bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_RemoteTechAvailable_createRequest(request);
@@ -848,6 +1008,11 @@ bool KRPCI::get_RemoteTechAvailable(bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::get_RemoteTechAvailable_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -891,6 +1056,8 @@ bool KRPCI::AutoPilot_SetRotation_createRequest(uint64_t AutoPilot_ID, float pit
 
 bool KRPCI::AutoPilot_SetRotation(uint64_t AutoPilot_ID, float pitch, float heading, float roll, uint64_t referenceFrame, bool wait)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AutoPilot_SetRotation_createRequest(AutoPilot_ID, pitch, heading, roll, referenceFrame, wait, request);
@@ -905,6 +1072,7 @@ bool KRPCI::AutoPilot_SetRotation(uint64_t AutoPilot_ID, float pitch, float head
     }
   return true;
 }
+
 
 bool KRPCI::AutoPilot_SetDirection_createRequest(uint64_t AutoPilot_ID, double direction_x, double direction_y, double direction_z, float roll, uint64_t referenceFrame, bool wait, krpc::Request& request)
 {
@@ -947,6 +1115,8 @@ bool KRPCI::AutoPilot_SetDirection_createRequest(uint64_t AutoPilot_ID, double d
 
 bool KRPCI::AutoPilot_SetDirection(uint64_t AutoPilot_ID, double direction_x, double direction_y, double direction_z, float roll, uint64_t referenceFrame, bool wait)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AutoPilot_SetDirection_createRequest(AutoPilot_ID, direction_x, direction_y, direction_z, roll, referenceFrame, wait, request);
@@ -961,6 +1131,7 @@ bool KRPCI::AutoPilot_SetDirection(uint64_t AutoPilot_ID, double direction_x, do
     }
   return true;
 }
+
 
 bool KRPCI::AutoPilot_Disengage_createRequest(uint64_t AutoPilot_ID, krpc::Request& request)
 {
@@ -978,6 +1149,8 @@ bool KRPCI::AutoPilot_Disengage_createRequest(uint64_t AutoPilot_ID, krpc::Reque
 
 bool KRPCI::AutoPilot_Disengage(uint64_t AutoPilot_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AutoPilot_Disengage_createRequest(AutoPilot_ID, request);
@@ -992,6 +1165,7 @@ bool KRPCI::AutoPilot_Disengage(uint64_t AutoPilot_ID)
     }
   return true;
 }
+
 
 bool KRPCI::AutoPilot_get_SAS_createRequest(uint64_t AutoPilot_ID, krpc::Request& request)
 {
@@ -1009,6 +1183,8 @@ bool KRPCI::AutoPilot_get_SAS_createRequest(uint64_t AutoPilot_ID, krpc::Request
 
 bool KRPCI::AutoPilot_get_SAS(uint64_t AutoPilot_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AutoPilot_get_SAS_createRequest(AutoPilot_ID, request);
@@ -1021,6 +1197,11 @@ bool KRPCI::AutoPilot_get_SAS(uint64_t AutoPilot_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::AutoPilot_get_SAS_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -1046,6 +1227,8 @@ bool KRPCI::AutoPilot_set_SAS_createRequest(uint64_t AutoPilot_ID, bool value, k
 
 bool KRPCI::AutoPilot_set_SAS(uint64_t AutoPilot_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AutoPilot_set_SAS_createRequest(AutoPilot_ID, value, request);
@@ -1060,6 +1243,7 @@ bool KRPCI::AutoPilot_set_SAS(uint64_t AutoPilot_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::AutoPilot_get_SASMode_createRequest(uint64_t AutoPilot_ID, krpc::Request& request)
 {
@@ -1077,6 +1261,8 @@ bool KRPCI::AutoPilot_get_SASMode_createRequest(uint64_t AutoPilot_ID, krpc::Req
 
 bool KRPCI::AutoPilot_get_SASMode(uint64_t AutoPilot_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AutoPilot_get_SASMode_createRequest(AutoPilot_ID, request);
@@ -1089,6 +1275,11 @@ bool KRPCI::AutoPilot_get_SASMode(uint64_t AutoPilot_ID, int32_t& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::AutoPilot_get_SASMode_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -1110,6 +1301,8 @@ bool KRPCI::AutoPilot_set_SASMode_createRequest(uint64_t AutoPilot_ID, int32_t v
 
 bool KRPCI::AutoPilot_set_SASMode(uint64_t AutoPilot_ID, int32_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AutoPilot_set_SASMode_createRequest(AutoPilot_ID, value, request);
@@ -1124,6 +1317,7 @@ bool KRPCI::AutoPilot_set_SASMode(uint64_t AutoPilot_ID, int32_t value)
     }
   return true;
 }
+
 
 bool KRPCI::AutoPilot_get_SpeedMode_createRequest(uint64_t AutoPilot_ID, krpc::Request& request)
 {
@@ -1141,6 +1335,8 @@ bool KRPCI::AutoPilot_get_SpeedMode_createRequest(uint64_t AutoPilot_ID, krpc::R
 
 bool KRPCI::AutoPilot_get_SpeedMode(uint64_t AutoPilot_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AutoPilot_get_SpeedMode_createRequest(AutoPilot_ID, request);
@@ -1153,6 +1349,11 @@ bool KRPCI::AutoPilot_get_SpeedMode(uint64_t AutoPilot_ID, int32_t& return_value
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::AutoPilot_get_SpeedMode_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -1174,6 +1375,8 @@ bool KRPCI::AutoPilot_set_SpeedMode_createRequest(uint64_t AutoPilot_ID, int32_t
 
 bool KRPCI::AutoPilot_set_SpeedMode(uint64_t AutoPilot_ID, int32_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AutoPilot_set_SpeedMode_createRequest(AutoPilot_ID, value, request);
@@ -1188,6 +1391,7 @@ bool KRPCI::AutoPilot_set_SpeedMode(uint64_t AutoPilot_ID, int32_t value)
     }
   return true;
 }
+
 
 bool KRPCI::AutoPilot_get_Error_createRequest(uint64_t AutoPilot_ID, krpc::Request& request)
 {
@@ -1205,6 +1409,8 @@ bool KRPCI::AutoPilot_get_Error_createRequest(uint64_t AutoPilot_ID, krpc::Reque
 
 bool KRPCI::AutoPilot_get_Error(uint64_t AutoPilot_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AutoPilot_get_Error_createRequest(AutoPilot_ID, request);
@@ -1216,9 +1422,15 @@ bool KRPCI::AutoPilot_get_Error(uint64_t AutoPilot_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      AutoPilot_get_Error_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::AutoPilot_get_Error_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -1238,6 +1450,8 @@ bool KRPCI::AutoPilot_get_RollError_createRequest(uint64_t AutoPilot_ID, krpc::R
 
 bool KRPCI::AutoPilot_get_RollError(uint64_t AutoPilot_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AutoPilot_get_RollError_createRequest(AutoPilot_ID, request);
@@ -1249,9 +1463,15 @@ bool KRPCI::AutoPilot_get_RollError(uint64_t AutoPilot_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      AutoPilot_get_RollError_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::AutoPilot_get_RollError_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -1277,6 +1497,8 @@ bool KRPCI::CelestialBody_Position_createRequest(uint64_t CelestialBody_ID, uint
 
 bool KRPCI::CelestialBody_Position(uint64_t CelestialBody_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_Position_createRequest(CelestialBody_ID, referenceFrame, request);
@@ -1288,10 +1510,16 @@ bool KRPCI::CelestialBody_Position(uint64_t CelestialBody_ID, uint64_t reference
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      CelestialBody_Position_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_Position_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -1317,6 +1545,8 @@ bool KRPCI::CelestialBody_Velocity_createRequest(uint64_t CelestialBody_ID, uint
 
 bool KRPCI::CelestialBody_Velocity(uint64_t CelestialBody_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_Velocity_createRequest(CelestialBody_ID, referenceFrame, request);
@@ -1328,10 +1558,16 @@ bool KRPCI::CelestialBody_Velocity(uint64_t CelestialBody_ID, uint64_t reference
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      CelestialBody_Velocity_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_Velocity_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -1357,6 +1593,8 @@ bool KRPCI::CelestialBody_Rotation_createRequest(uint64_t CelestialBody_ID, uint
 
 bool KRPCI::CelestialBody_Rotation(uint64_t CelestialBody_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_Rotation_createRequest(CelestialBody_ID, referenceFrame, request);
@@ -1368,10 +1606,16 @@ bool KRPCI::CelestialBody_Rotation(uint64_t CelestialBody_ID, uint64_t reference
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      CelestialBody_Rotation_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_Rotation_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -1397,6 +1641,8 @@ bool KRPCI::CelestialBody_Direction_createRequest(uint64_t CelestialBody_ID, uin
 
 bool KRPCI::CelestialBody_Direction(uint64_t CelestialBody_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_Direction_createRequest(CelestialBody_ID, referenceFrame, request);
@@ -1408,10 +1654,16 @@ bool KRPCI::CelestialBody_Direction(uint64_t CelestialBody_ID, uint64_t referenc
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      CelestialBody_Direction_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_Direction_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -1437,6 +1689,8 @@ bool KRPCI::CelestialBody_AngularVelocity_createRequest(uint64_t CelestialBody_I
 
 bool KRPCI::CelestialBody_AngularVelocity(uint64_t CelestialBody_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_AngularVelocity_createRequest(CelestialBody_ID, referenceFrame, request);
@@ -1448,10 +1702,16 @@ bool KRPCI::CelestialBody_AngularVelocity(uint64_t CelestialBody_ID, uint64_t re
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      CelestialBody_AngularVelocity_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_AngularVelocity_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -1471,6 +1731,8 @@ bool KRPCI::CelestialBody_get_Name_createRequest(uint64_t CelestialBody_ID, krpc
 
 bool KRPCI::CelestialBody_get_Name(uint64_t CelestialBody_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_Name_createRequest(CelestialBody_ID, request);
@@ -1483,6 +1745,11 @@ bool KRPCI::CelestialBody_get_Name(uint64_t CelestialBody_ID, std::string& retur
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_Name_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -1502,6 +1769,8 @@ bool KRPCI::CelestialBody_get_Satellites_createRequest(uint64_t CelestialBody_ID
 
 bool KRPCI::CelestialBody_get_Satellites(uint64_t CelestialBody_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_Satellites_createRequest(CelestialBody_ID, request);
@@ -1513,16 +1782,22 @@ bool KRPCI::CelestialBody_get_Satellites(uint64_t CelestialBody_ID, std::vector<
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      CelestialBody_get_Satellites_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_Satellites_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -1543,6 +1818,8 @@ bool KRPCI::CelestialBody_get_Mass_createRequest(uint64_t CelestialBody_ID, krpc
 
 bool KRPCI::CelestialBody_get_Mass(uint64_t CelestialBody_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_Mass_createRequest(CelestialBody_ID, request);
@@ -1554,9 +1831,15 @@ bool KRPCI::CelestialBody_get_Mass(uint64_t CelestialBody_ID, float& return_valu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      CelestialBody_get_Mass_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_Mass_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -1576,6 +1859,8 @@ bool KRPCI::CelestialBody_get_GravitationalParameter_createRequest(uint64_t Cele
 
 bool KRPCI::CelestialBody_get_GravitationalParameter(uint64_t CelestialBody_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_GravitationalParameter_createRequest(CelestialBody_ID, request);
@@ -1587,9 +1872,15 @@ bool KRPCI::CelestialBody_get_GravitationalParameter(uint64_t CelestialBody_ID, 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      CelestialBody_get_GravitationalParameter_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_GravitationalParameter_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -1609,6 +1900,8 @@ bool KRPCI::CelestialBody_get_SurfaceGravity_createRequest(uint64_t CelestialBod
 
 bool KRPCI::CelestialBody_get_SurfaceGravity(uint64_t CelestialBody_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_SurfaceGravity_createRequest(CelestialBody_ID, request);
@@ -1620,9 +1913,15 @@ bool KRPCI::CelestialBody_get_SurfaceGravity(uint64_t CelestialBody_ID, float& r
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      CelestialBody_get_SurfaceGravity_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_SurfaceGravity_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -1642,6 +1941,8 @@ bool KRPCI::CelestialBody_get_RotationalPeriod_createRequest(uint64_t CelestialB
 
 bool KRPCI::CelestialBody_get_RotationalPeriod(uint64_t CelestialBody_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_RotationalPeriod_createRequest(CelestialBody_ID, request);
@@ -1653,9 +1954,15 @@ bool KRPCI::CelestialBody_get_RotationalPeriod(uint64_t CelestialBody_ID, float&
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      CelestialBody_get_RotationalPeriod_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_RotationalPeriod_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -1675,6 +1982,8 @@ bool KRPCI::CelestialBody_get_RotationalSpeed_createRequest(uint64_t CelestialBo
 
 bool KRPCI::CelestialBody_get_RotationalSpeed(uint64_t CelestialBody_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_RotationalSpeed_createRequest(CelestialBody_ID, request);
@@ -1686,9 +1995,15 @@ bool KRPCI::CelestialBody_get_RotationalSpeed(uint64_t CelestialBody_ID, float& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      CelestialBody_get_RotationalSpeed_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_RotationalSpeed_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -1708,6 +2023,8 @@ bool KRPCI::CelestialBody_get_EquatorialRadius_createRequest(uint64_t CelestialB
 
 bool KRPCI::CelestialBody_get_EquatorialRadius(uint64_t CelestialBody_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_EquatorialRadius_createRequest(CelestialBody_ID, request);
@@ -1719,9 +2036,15 @@ bool KRPCI::CelestialBody_get_EquatorialRadius(uint64_t CelestialBody_ID, float&
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      CelestialBody_get_EquatorialRadius_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_EquatorialRadius_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -1741,6 +2064,8 @@ bool KRPCI::CelestialBody_get_SphereOfInfluence_createRequest(uint64_t Celestial
 
 bool KRPCI::CelestialBody_get_SphereOfInfluence(uint64_t CelestialBody_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_SphereOfInfluence_createRequest(CelestialBody_ID, request);
@@ -1752,9 +2077,15 @@ bool KRPCI::CelestialBody_get_SphereOfInfluence(uint64_t CelestialBody_ID, float
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      CelestialBody_get_SphereOfInfluence_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_SphereOfInfluence_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -1774,6 +2105,8 @@ bool KRPCI::CelestialBody_get_Orbit_createRequest(uint64_t CelestialBody_ID, krp
 
 bool KRPCI::CelestialBody_get_Orbit(uint64_t CelestialBody_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_Orbit_createRequest(CelestialBody_ID, request);
@@ -1785,10 +2118,16 @@ bool KRPCI::CelestialBody_get_Orbit(uint64_t CelestialBody_ID, uint64_t& return_
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      CelestialBody_get_Orbit_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_Orbit_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -1808,6 +2147,8 @@ bool KRPCI::CelestialBody_get_HasAtmosphere_createRequest(uint64_t CelestialBody
 
 bool KRPCI::CelestialBody_get_HasAtmosphere(uint64_t CelestialBody_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_HasAtmosphere_createRequest(CelestialBody_ID, request);
@@ -1820,6 +2161,11 @@ bool KRPCI::CelestialBody_get_HasAtmosphere(uint64_t CelestialBody_ID, bool& ret
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_HasAtmosphere_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -1839,6 +2185,8 @@ bool KRPCI::CelestialBody_get_AtmosphereDepth_createRequest(uint64_t CelestialBo
 
 bool KRPCI::CelestialBody_get_AtmosphereDepth(uint64_t CelestialBody_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_AtmosphereDepth_createRequest(CelestialBody_ID, request);
@@ -1850,9 +2198,15 @@ bool KRPCI::CelestialBody_get_AtmosphereDepth(uint64_t CelestialBody_ID, float& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      CelestialBody_get_AtmosphereDepth_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_AtmosphereDepth_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -1872,6 +2226,8 @@ bool KRPCI::CelestialBody_get_HasAtmosphericOxygen_createRequest(uint64_t Celest
 
 bool KRPCI::CelestialBody_get_HasAtmosphericOxygen(uint64_t CelestialBody_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_HasAtmosphericOxygen_createRequest(CelestialBody_ID, request);
@@ -1884,6 +2240,11 @@ bool KRPCI::CelestialBody_get_HasAtmosphericOxygen(uint64_t CelestialBody_ID, bo
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_HasAtmosphericOxygen_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -1903,6 +2264,8 @@ bool KRPCI::CelestialBody_get_ReferenceFrame_createRequest(uint64_t CelestialBod
 
 bool KRPCI::CelestialBody_get_ReferenceFrame(uint64_t CelestialBody_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_ReferenceFrame_createRequest(CelestialBody_ID, request);
@@ -1914,10 +2277,16 @@ bool KRPCI::CelestialBody_get_ReferenceFrame(uint64_t CelestialBody_ID, uint64_t
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      CelestialBody_get_ReferenceFrame_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_ReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -1937,6 +2306,8 @@ bool KRPCI::CelestialBody_get_NonRotatingReferenceFrame_createRequest(uint64_t C
 
 bool KRPCI::CelestialBody_get_NonRotatingReferenceFrame(uint64_t CelestialBody_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_NonRotatingReferenceFrame_createRequest(CelestialBody_ID, request);
@@ -1948,10 +2319,16 @@ bool KRPCI::CelestialBody_get_NonRotatingReferenceFrame(uint64_t CelestialBody_I
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      CelestialBody_get_NonRotatingReferenceFrame_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_NonRotatingReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -1971,6 +2348,8 @@ bool KRPCI::CelestialBody_get_OrbitalReferenceFrame_createRequest(uint64_t Celes
 
 bool KRPCI::CelestialBody_get_OrbitalReferenceFrame(uint64_t CelestialBody_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CelestialBody_get_OrbitalReferenceFrame_createRequest(CelestialBody_ID, request);
@@ -1982,10 +2361,16 @@ bool KRPCI::CelestialBody_get_OrbitalReferenceFrame(uint64_t CelestialBody_ID, u
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      CelestialBody_get_OrbitalReferenceFrame_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CelestialBody_get_OrbitalReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -2011,6 +2396,8 @@ bool KRPCI::Comms_SignalDelayToVessel_createRequest(uint64_t Comms_ID, uint64_t 
 
 bool KRPCI::Comms_SignalDelayToVessel(uint64_t Comms_ID, uint64_t other, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Comms_SignalDelayToVessel_createRequest(Comms_ID, other, request);
@@ -2022,9 +2409,15 @@ bool KRPCI::Comms_SignalDelayToVessel(uint64_t Comms_ID, uint64_t other, double&
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Comms_SignalDelayToVessel_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Comms_SignalDelayToVessel_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -2044,6 +2437,8 @@ bool KRPCI::Comms_get_HasFlightComputer_createRequest(uint64_t Comms_ID, krpc::R
 
 bool KRPCI::Comms_get_HasFlightComputer(uint64_t Comms_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Comms_get_HasFlightComputer_createRequest(Comms_ID, request);
@@ -2056,6 +2451,11 @@ bool KRPCI::Comms_get_HasFlightComputer(uint64_t Comms_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Comms_get_HasFlightComputer_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -2075,6 +2475,8 @@ bool KRPCI::Comms_get_HasConnection_createRequest(uint64_t Comms_ID, krpc::Reque
 
 bool KRPCI::Comms_get_HasConnection(uint64_t Comms_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Comms_get_HasConnection_createRequest(Comms_ID, request);
@@ -2087,6 +2489,11 @@ bool KRPCI::Comms_get_HasConnection(uint64_t Comms_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Comms_get_HasConnection_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -2106,6 +2513,8 @@ bool KRPCI::Comms_get_HasConnectionToGroundStation_createRequest(uint64_t Comms_
 
 bool KRPCI::Comms_get_HasConnectionToGroundStation(uint64_t Comms_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Comms_get_HasConnectionToGroundStation_createRequest(Comms_ID, request);
@@ -2118,6 +2527,11 @@ bool KRPCI::Comms_get_HasConnectionToGroundStation(uint64_t Comms_ID, bool& retu
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Comms_get_HasConnectionToGroundStation_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -2137,6 +2551,8 @@ bool KRPCI::Comms_get_SignalDelay_createRequest(uint64_t Comms_ID, krpc::Request
 
 bool KRPCI::Comms_get_SignalDelay(uint64_t Comms_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Comms_get_SignalDelay_createRequest(Comms_ID, request);
@@ -2148,9 +2564,15 @@ bool KRPCI::Comms_get_SignalDelay(uint64_t Comms_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Comms_get_SignalDelay_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Comms_get_SignalDelay_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -2170,6 +2592,8 @@ bool KRPCI::Comms_get_SignalDelayToGroundStation_createRequest(uint64_t Comms_ID
 
 bool KRPCI::Comms_get_SignalDelayToGroundStation(uint64_t Comms_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Comms_get_SignalDelayToGroundStation_createRequest(Comms_ID, request);
@@ -2181,9 +2605,15 @@ bool KRPCI::Comms_get_SignalDelayToGroundStation(uint64_t Comms_ID, double& retu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Comms_get_SignalDelayToGroundStation_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Comms_get_SignalDelayToGroundStation_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -2203,6 +2633,8 @@ bool KRPCI::Control_ActivateNextStage_createRequest(uint64_t Control_ID, krpc::R
 
 bool KRPCI::Control_ActivateNextStage(uint64_t Control_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_ActivateNextStage_createRequest(Control_ID, request);
@@ -2214,16 +2646,22 @@ bool KRPCI::Control_ActivateNextStage(uint64_t Control_ID, std::vector<uint64_t>
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Control_ActivateNextStage_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Control_ActivateNextStage_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -2246,6 +2684,8 @@ bool KRPCI::Control_GetActionGroup_createRequest(uint64_t Control_ID, uint32_t g
 
 bool KRPCI::Control_GetActionGroup(uint64_t Control_ID, uint32_t group, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_GetActionGroup_createRequest(Control_ID, group, request);
@@ -2258,6 +2698,11 @@ bool KRPCI::Control_GetActionGroup(uint64_t Control_ID, uint32_t group, bool& re
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Control_GetActionGroup_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -2285,6 +2730,8 @@ bool KRPCI::Control_SetActionGroup_createRequest(uint64_t Control_ID, uint32_t g
 
 bool KRPCI::Control_SetActionGroup(uint64_t Control_ID, uint32_t group, bool state)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_SetActionGroup_createRequest(Control_ID, group, state, request);
@@ -2299,6 +2746,7 @@ bool KRPCI::Control_SetActionGroup(uint64_t Control_ID, uint32_t group, bool sta
     }
   return true;
 }
+
 
 bool KRPCI::Control_ToggleActionGroup_createRequest(uint64_t Control_ID, uint32_t group, krpc::Request& request)
 {
@@ -2318,6 +2766,8 @@ bool KRPCI::Control_ToggleActionGroup_createRequest(uint64_t Control_ID, uint32_
 
 bool KRPCI::Control_ToggleActionGroup(uint64_t Control_ID, uint32_t group)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_ToggleActionGroup_createRequest(Control_ID, group, request);
@@ -2332,6 +2782,7 @@ bool KRPCI::Control_ToggleActionGroup(uint64_t Control_ID, uint32_t group)
     }
   return true;
 }
+
 
 bool KRPCI::Control_AddNode_createRequest(uint64_t Control_ID, double UT, float prograde, float normal, float radial, krpc::Request& request)
 {
@@ -2365,6 +2816,8 @@ bool KRPCI::Control_AddNode_createRequest(uint64_t Control_ID, double UT, float 
 
 bool KRPCI::Control_AddNode(uint64_t Control_ID, double UT, float prograde, float normal, float radial, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_AddNode_createRequest(Control_ID, UT, prograde, normal, radial, request);
@@ -2376,10 +2829,16 @@ bool KRPCI::Control_AddNode(uint64_t Control_ID, double UT, float prograde, floa
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Control_AddNode_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Control_AddNode_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -2399,6 +2858,8 @@ bool KRPCI::Control_RemoveNodes_createRequest(uint64_t Control_ID, krpc::Request
 
 bool KRPCI::Control_RemoveNodes(uint64_t Control_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_RemoveNodes_createRequest(Control_ID, request);
@@ -2413,6 +2874,7 @@ bool KRPCI::Control_RemoveNodes(uint64_t Control_ID)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_SAS_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -2430,6 +2892,8 @@ bool KRPCI::Control_get_SAS_createRequest(uint64_t Control_ID, krpc::Request& re
 
 bool KRPCI::Control_get_SAS(uint64_t Control_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_SAS_createRequest(Control_ID, request);
@@ -2442,6 +2906,11 @@ bool KRPCI::Control_get_SAS(uint64_t Control_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Control_get_SAS_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -2467,6 +2936,8 @@ bool KRPCI::Control_set_SAS_createRequest(uint64_t Control_ID, bool value, krpc:
 
 bool KRPCI::Control_set_SAS(uint64_t Control_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_SAS_createRequest(Control_ID, value, request);
@@ -2481,6 +2952,7 @@ bool KRPCI::Control_set_SAS(uint64_t Control_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_RCS_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -2498,6 +2970,8 @@ bool KRPCI::Control_get_RCS_createRequest(uint64_t Control_ID, krpc::Request& re
 
 bool KRPCI::Control_get_RCS(uint64_t Control_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_RCS_createRequest(Control_ID, request);
@@ -2510,6 +2984,11 @@ bool KRPCI::Control_get_RCS(uint64_t Control_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Control_get_RCS_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -2535,6 +3014,8 @@ bool KRPCI::Control_set_RCS_createRequest(uint64_t Control_ID, bool value, krpc:
 
 bool KRPCI::Control_set_RCS(uint64_t Control_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_RCS_createRequest(Control_ID, value, request);
@@ -2549,6 +3030,7 @@ bool KRPCI::Control_set_RCS(uint64_t Control_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_Gear_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -2566,6 +3048,8 @@ bool KRPCI::Control_get_Gear_createRequest(uint64_t Control_ID, krpc::Request& r
 
 bool KRPCI::Control_get_Gear(uint64_t Control_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Gear_createRequest(Control_ID, request);
@@ -2578,6 +3062,11 @@ bool KRPCI::Control_get_Gear(uint64_t Control_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Control_get_Gear_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -2603,6 +3092,8 @@ bool KRPCI::Control_set_Gear_createRequest(uint64_t Control_ID, bool value, krpc
 
 bool KRPCI::Control_set_Gear(uint64_t Control_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_Gear_createRequest(Control_ID, value, request);
@@ -2617,6 +3108,7 @@ bool KRPCI::Control_set_Gear(uint64_t Control_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_Lights_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -2634,6 +3126,8 @@ bool KRPCI::Control_get_Lights_createRequest(uint64_t Control_ID, krpc::Request&
 
 bool KRPCI::Control_get_Lights(uint64_t Control_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Lights_createRequest(Control_ID, request);
@@ -2646,6 +3140,11 @@ bool KRPCI::Control_get_Lights(uint64_t Control_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Control_get_Lights_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -2671,6 +3170,8 @@ bool KRPCI::Control_set_Lights_createRequest(uint64_t Control_ID, bool value, kr
 
 bool KRPCI::Control_set_Lights(uint64_t Control_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_Lights_createRequest(Control_ID, value, request);
@@ -2685,6 +3186,7 @@ bool KRPCI::Control_set_Lights(uint64_t Control_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_Brakes_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -2702,6 +3204,8 @@ bool KRPCI::Control_get_Brakes_createRequest(uint64_t Control_ID, krpc::Request&
 
 bool KRPCI::Control_get_Brakes(uint64_t Control_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Brakes_createRequest(Control_ID, request);
@@ -2714,6 +3218,11 @@ bool KRPCI::Control_get_Brakes(uint64_t Control_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Control_get_Brakes_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -2739,6 +3248,8 @@ bool KRPCI::Control_set_Brakes_createRequest(uint64_t Control_ID, bool value, kr
 
 bool KRPCI::Control_set_Brakes(uint64_t Control_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_Brakes_createRequest(Control_ID, value, request);
@@ -2753,6 +3264,7 @@ bool KRPCI::Control_set_Brakes(uint64_t Control_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_Abort_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -2770,6 +3282,8 @@ bool KRPCI::Control_get_Abort_createRequest(uint64_t Control_ID, krpc::Request& 
 
 bool KRPCI::Control_get_Abort(uint64_t Control_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Abort_createRequest(Control_ID, request);
@@ -2782,6 +3296,11 @@ bool KRPCI::Control_get_Abort(uint64_t Control_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Control_get_Abort_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -2807,6 +3326,8 @@ bool KRPCI::Control_set_Abort_createRequest(uint64_t Control_ID, bool value, krp
 
 bool KRPCI::Control_set_Abort(uint64_t Control_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_Abort_createRequest(Control_ID, value, request);
@@ -2821,6 +3342,7 @@ bool KRPCI::Control_set_Abort(uint64_t Control_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_Throttle_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -2838,6 +3360,8 @@ bool KRPCI::Control_get_Throttle_createRequest(uint64_t Control_ID, krpc::Reques
 
 bool KRPCI::Control_get_Throttle(uint64_t Control_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Throttle_createRequest(Control_ID, request);
@@ -2849,9 +3373,15 @@ bool KRPCI::Control_get_Throttle(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Control_get_Throttle_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Control_get_Throttle_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -2875,6 +3405,8 @@ bool KRPCI::Control_set_Throttle_createRequest(uint64_t Control_ID, float value,
 
 bool KRPCI::Control_set_Throttle(uint64_t Control_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_Throttle_createRequest(Control_ID, value, request);
@@ -2889,6 +3421,7 @@ bool KRPCI::Control_set_Throttle(uint64_t Control_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_Pitch_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -2906,6 +3439,8 @@ bool KRPCI::Control_get_Pitch_createRequest(uint64_t Control_ID, krpc::Request& 
 
 bool KRPCI::Control_get_Pitch(uint64_t Control_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Pitch_createRequest(Control_ID, request);
@@ -2917,9 +3452,15 @@ bool KRPCI::Control_get_Pitch(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Control_get_Pitch_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Control_get_Pitch_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -2943,6 +3484,8 @@ bool KRPCI::Control_set_Pitch_createRequest(uint64_t Control_ID, float value, kr
 
 bool KRPCI::Control_set_Pitch(uint64_t Control_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_Pitch_createRequest(Control_ID, value, request);
@@ -2957,6 +3500,7 @@ bool KRPCI::Control_set_Pitch(uint64_t Control_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_Yaw_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -2974,6 +3518,8 @@ bool KRPCI::Control_get_Yaw_createRequest(uint64_t Control_ID, krpc::Request& re
 
 bool KRPCI::Control_get_Yaw(uint64_t Control_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Yaw_createRequest(Control_ID, request);
@@ -2985,9 +3531,15 @@ bool KRPCI::Control_get_Yaw(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Control_get_Yaw_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Control_get_Yaw_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3011,6 +3563,8 @@ bool KRPCI::Control_set_Yaw_createRequest(uint64_t Control_ID, float value, krpc
 
 bool KRPCI::Control_set_Yaw(uint64_t Control_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_Yaw_createRequest(Control_ID, value, request);
@@ -3025,6 +3579,7 @@ bool KRPCI::Control_set_Yaw(uint64_t Control_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_Roll_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -3042,6 +3597,8 @@ bool KRPCI::Control_get_Roll_createRequest(uint64_t Control_ID, krpc::Request& r
 
 bool KRPCI::Control_get_Roll(uint64_t Control_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Roll_createRequest(Control_ID, request);
@@ -3053,9 +3610,15 @@ bool KRPCI::Control_get_Roll(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Control_get_Roll_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Control_get_Roll_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3079,6 +3642,8 @@ bool KRPCI::Control_set_Roll_createRequest(uint64_t Control_ID, float value, krp
 
 bool KRPCI::Control_set_Roll(uint64_t Control_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_Roll_createRequest(Control_ID, value, request);
@@ -3093,6 +3658,7 @@ bool KRPCI::Control_set_Roll(uint64_t Control_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_Forward_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -3110,6 +3676,8 @@ bool KRPCI::Control_get_Forward_createRequest(uint64_t Control_ID, krpc::Request
 
 bool KRPCI::Control_get_Forward(uint64_t Control_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Forward_createRequest(Control_ID, request);
@@ -3121,9 +3689,15 @@ bool KRPCI::Control_get_Forward(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Control_get_Forward_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Control_get_Forward_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3147,6 +3721,8 @@ bool KRPCI::Control_set_Forward_createRequest(uint64_t Control_ID, float value, 
 
 bool KRPCI::Control_set_Forward(uint64_t Control_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_Forward_createRequest(Control_ID, value, request);
@@ -3161,6 +3737,7 @@ bool KRPCI::Control_set_Forward(uint64_t Control_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_Up_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -3178,6 +3755,8 @@ bool KRPCI::Control_get_Up_createRequest(uint64_t Control_ID, krpc::Request& req
 
 bool KRPCI::Control_get_Up(uint64_t Control_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Up_createRequest(Control_ID, request);
@@ -3189,9 +3768,15 @@ bool KRPCI::Control_get_Up(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Control_get_Up_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Control_get_Up_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3215,6 +3800,8 @@ bool KRPCI::Control_set_Up_createRequest(uint64_t Control_ID, float value, krpc:
 
 bool KRPCI::Control_set_Up(uint64_t Control_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_Up_createRequest(Control_ID, value, request);
@@ -3229,6 +3816,7 @@ bool KRPCI::Control_set_Up(uint64_t Control_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_Right_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -3246,6 +3834,8 @@ bool KRPCI::Control_get_Right_createRequest(uint64_t Control_ID, krpc::Request& 
 
 bool KRPCI::Control_get_Right(uint64_t Control_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Right_createRequest(Control_ID, request);
@@ -3257,9 +3847,15 @@ bool KRPCI::Control_get_Right(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Control_get_Right_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Control_get_Right_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3283,6 +3879,8 @@ bool KRPCI::Control_set_Right_createRequest(uint64_t Control_ID, float value, kr
 
 bool KRPCI::Control_set_Right(uint64_t Control_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_Right_createRequest(Control_ID, value, request);
@@ -3297,6 +3895,7 @@ bool KRPCI::Control_set_Right(uint64_t Control_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_WheelThrottle_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -3314,6 +3913,8 @@ bool KRPCI::Control_get_WheelThrottle_createRequest(uint64_t Control_ID, krpc::R
 
 bool KRPCI::Control_get_WheelThrottle(uint64_t Control_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_WheelThrottle_createRequest(Control_ID, request);
@@ -3325,9 +3926,15 @@ bool KRPCI::Control_get_WheelThrottle(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Control_get_WheelThrottle_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Control_get_WheelThrottle_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3351,6 +3958,8 @@ bool KRPCI::Control_set_WheelThrottle_createRequest(uint64_t Control_ID, float v
 
 bool KRPCI::Control_set_WheelThrottle(uint64_t Control_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_WheelThrottle_createRequest(Control_ID, value, request);
@@ -3365,6 +3974,7 @@ bool KRPCI::Control_set_WheelThrottle(uint64_t Control_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_WheelSteering_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -3382,6 +3992,8 @@ bool KRPCI::Control_get_WheelSteering_createRequest(uint64_t Control_ID, krpc::R
 
 bool KRPCI::Control_get_WheelSteering(uint64_t Control_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_WheelSteering_createRequest(Control_ID, request);
@@ -3393,9 +4005,15 @@ bool KRPCI::Control_get_WheelSteering(uint64_t Control_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Control_get_WheelSteering_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Control_get_WheelSteering_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3419,6 +4037,8 @@ bool KRPCI::Control_set_WheelSteering_createRequest(uint64_t Control_ID, float v
 
 bool KRPCI::Control_set_WheelSteering(uint64_t Control_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_set_WheelSteering_createRequest(Control_ID, value, request);
@@ -3433,6 +4053,7 @@ bool KRPCI::Control_set_WheelSteering(uint64_t Control_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Control_get_CurrentStage_createRequest(uint64_t Control_ID, krpc::Request& request)
 {
@@ -3450,6 +4071,8 @@ bool KRPCI::Control_get_CurrentStage_createRequest(uint64_t Control_ID, krpc::Re
 
 bool KRPCI::Control_get_CurrentStage(uint64_t Control_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_CurrentStage_createRequest(Control_ID, request);
@@ -3462,6 +4085,11 @@ bool KRPCI::Control_get_CurrentStage(uint64_t Control_ID, int32_t& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Control_get_CurrentStage_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -3481,6 +4109,8 @@ bool KRPCI::Control_get_Nodes_createRequest(uint64_t Control_ID, krpc::Request& 
 
 bool KRPCI::Control_get_Nodes(uint64_t Control_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Control_get_Nodes_createRequest(Control_ID, request);
@@ -3492,16 +4122,22 @@ bool KRPCI::Control_get_Nodes(uint64_t Control_ID, std::vector<uint64_t>& return
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Control_get_Nodes_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Control_get_Nodes_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -3522,6 +4158,8 @@ bool KRPCI::Flight_get_GForce_createRequest(uint64_t Flight_ID, krpc::Request& r
 
 bool KRPCI::Flight_get_GForce(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_GForce_createRequest(Flight_ID, request);
@@ -3533,9 +4171,15 @@ bool KRPCI::Flight_get_GForce(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_GForce_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_GForce_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3555,6 +4199,8 @@ bool KRPCI::Flight_get_MeanAltitude_createRequest(uint64_t Flight_ID, krpc::Requ
 
 bool KRPCI::Flight_get_MeanAltitude(uint64_t Flight_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_MeanAltitude_createRequest(Flight_ID, request);
@@ -3566,9 +4212,15 @@ bool KRPCI::Flight_get_MeanAltitude(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_MeanAltitude_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_MeanAltitude_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3588,6 +4240,8 @@ bool KRPCI::Flight_get_SurfaceAltitude_createRequest(uint64_t Flight_ID, krpc::R
 
 bool KRPCI::Flight_get_SurfaceAltitude(uint64_t Flight_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_SurfaceAltitude_createRequest(Flight_ID, request);
@@ -3599,9 +4253,15 @@ bool KRPCI::Flight_get_SurfaceAltitude(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_SurfaceAltitude_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_SurfaceAltitude_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3621,6 +4281,8 @@ bool KRPCI::Flight_get_BedrockAltitude_createRequest(uint64_t Flight_ID, krpc::R
 
 bool KRPCI::Flight_get_BedrockAltitude(uint64_t Flight_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_BedrockAltitude_createRequest(Flight_ID, request);
@@ -3632,9 +4294,15 @@ bool KRPCI::Flight_get_BedrockAltitude(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_BedrockAltitude_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_BedrockAltitude_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3654,6 +4322,8 @@ bool KRPCI::Flight_get_Elevation_createRequest(uint64_t Flight_ID, krpc::Request
 
 bool KRPCI::Flight_get_Elevation(uint64_t Flight_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Elevation_createRequest(Flight_ID, request);
@@ -3665,9 +4335,15 @@ bool KRPCI::Flight_get_Elevation(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_Elevation_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Elevation_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3687,6 +4363,8 @@ bool KRPCI::Flight_get_Latitude_createRequest(uint64_t Flight_ID, krpc::Request&
 
 bool KRPCI::Flight_get_Latitude(uint64_t Flight_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Latitude_createRequest(Flight_ID, request);
@@ -3698,9 +4376,15 @@ bool KRPCI::Flight_get_Latitude(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_Latitude_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Latitude_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3720,6 +4404,8 @@ bool KRPCI::Flight_get_Longitude_createRequest(uint64_t Flight_ID, krpc::Request
 
 bool KRPCI::Flight_get_Longitude(uint64_t Flight_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Longitude_createRequest(Flight_ID, request);
@@ -3731,9 +4417,15 @@ bool KRPCI::Flight_get_Longitude(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_Longitude_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Longitude_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3753,6 +4445,8 @@ bool KRPCI::Flight_get_Velocity_createRequest(uint64_t Flight_ID, krpc::Request&
 
 bool KRPCI::Flight_get_Velocity(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Velocity_createRequest(Flight_ID, request);
@@ -3764,10 +4458,16 @@ bool KRPCI::Flight_get_Velocity(uint64_t Flight_ID, double& x, double& y, double
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_Velocity_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Velocity_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -3787,6 +4487,8 @@ bool KRPCI::Flight_get_Speed_createRequest(uint64_t Flight_ID, krpc::Request& re
 
 bool KRPCI::Flight_get_Speed(uint64_t Flight_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Speed_createRequest(Flight_ID, request);
@@ -3798,9 +4500,15 @@ bool KRPCI::Flight_get_Speed(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_Speed_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Speed_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3820,6 +4528,8 @@ bool KRPCI::Flight_get_HorizontalSpeed_createRequest(uint64_t Flight_ID, krpc::R
 
 bool KRPCI::Flight_get_HorizontalSpeed(uint64_t Flight_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_HorizontalSpeed_createRequest(Flight_ID, request);
@@ -3831,9 +4541,15 @@ bool KRPCI::Flight_get_HorizontalSpeed(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_HorizontalSpeed_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_HorizontalSpeed_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3853,6 +4569,8 @@ bool KRPCI::Flight_get_VerticalSpeed_createRequest(uint64_t Flight_ID, krpc::Req
 
 bool KRPCI::Flight_get_VerticalSpeed(uint64_t Flight_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_VerticalSpeed_createRequest(Flight_ID, request);
@@ -3864,9 +4582,15 @@ bool KRPCI::Flight_get_VerticalSpeed(uint64_t Flight_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_VerticalSpeed_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_VerticalSpeed_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -3886,6 +4610,8 @@ bool KRPCI::Flight_get_CenterOfMass_createRequest(uint64_t Flight_ID, krpc::Requ
 
 bool KRPCI::Flight_get_CenterOfMass(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_CenterOfMass_createRequest(Flight_ID, request);
@@ -3897,10 +4623,16 @@ bool KRPCI::Flight_get_CenterOfMass(uint64_t Flight_ID, double& x, double& y, do
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_CenterOfMass_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_CenterOfMass_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -3920,6 +4652,8 @@ bool KRPCI::Flight_get_Rotation_createRequest(uint64_t Flight_ID, krpc::Request&
 
 bool KRPCI::Flight_get_Rotation(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Rotation_createRequest(Flight_ID, request);
@@ -3931,10 +4665,16 @@ bool KRPCI::Flight_get_Rotation(uint64_t Flight_ID, double& x, double& y, double
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_Rotation_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Rotation_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -3954,6 +4694,8 @@ bool KRPCI::Flight_get_Direction_createRequest(uint64_t Flight_ID, krpc::Request
 
 bool KRPCI::Flight_get_Direction(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Direction_createRequest(Flight_ID, request);
@@ -3965,10 +4707,16 @@ bool KRPCI::Flight_get_Direction(uint64_t Flight_ID, double& x, double& y, doubl
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_Direction_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Direction_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -3988,6 +4736,8 @@ bool KRPCI::Flight_get_Pitch_createRequest(uint64_t Flight_ID, krpc::Request& re
 
 bool KRPCI::Flight_get_Pitch(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Pitch_createRequest(Flight_ID, request);
@@ -3999,9 +4749,15 @@ bool KRPCI::Flight_get_Pitch(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_Pitch_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Pitch_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4021,6 +4777,8 @@ bool KRPCI::Flight_get_Heading_createRequest(uint64_t Flight_ID, krpc::Request& 
 
 bool KRPCI::Flight_get_Heading(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Heading_createRequest(Flight_ID, request);
@@ -4032,9 +4790,15 @@ bool KRPCI::Flight_get_Heading(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_Heading_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Heading_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4054,6 +4818,8 @@ bool KRPCI::Flight_get_Roll_createRequest(uint64_t Flight_ID, krpc::Request& req
 
 bool KRPCI::Flight_get_Roll(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Roll_createRequest(Flight_ID, request);
@@ -4065,9 +4831,15 @@ bool KRPCI::Flight_get_Roll(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_Roll_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Roll_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4087,6 +4859,8 @@ bool KRPCI::Flight_get_Prograde_createRequest(uint64_t Flight_ID, krpc::Request&
 
 bool KRPCI::Flight_get_Prograde(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Prograde_createRequest(Flight_ID, request);
@@ -4098,10 +4872,16 @@ bool KRPCI::Flight_get_Prograde(uint64_t Flight_ID, double& x, double& y, double
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_Prograde_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Prograde_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -4121,6 +4901,8 @@ bool KRPCI::Flight_get_Retrograde_createRequest(uint64_t Flight_ID, krpc::Reques
 
 bool KRPCI::Flight_get_Retrograde(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Retrograde_createRequest(Flight_ID, request);
@@ -4132,10 +4914,16 @@ bool KRPCI::Flight_get_Retrograde(uint64_t Flight_ID, double& x, double& y, doub
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_Retrograde_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Retrograde_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -4155,6 +4943,8 @@ bool KRPCI::Flight_get_Normal_createRequest(uint64_t Flight_ID, krpc::Request& r
 
 bool KRPCI::Flight_get_Normal(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Normal_createRequest(Flight_ID, request);
@@ -4166,10 +4956,16 @@ bool KRPCI::Flight_get_Normal(uint64_t Flight_ID, double& x, double& y, double& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_Normal_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Normal_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -4189,6 +4985,8 @@ bool KRPCI::Flight_get_AntiNormal_createRequest(uint64_t Flight_ID, krpc::Reques
 
 bool KRPCI::Flight_get_AntiNormal(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_AntiNormal_createRequest(Flight_ID, request);
@@ -4200,10 +4998,16 @@ bool KRPCI::Flight_get_AntiNormal(uint64_t Flight_ID, double& x, double& y, doub
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_AntiNormal_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_AntiNormal_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -4223,6 +5027,8 @@ bool KRPCI::Flight_get_Radial_createRequest(uint64_t Flight_ID, krpc::Request& r
 
 bool KRPCI::Flight_get_Radial(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Radial_createRequest(Flight_ID, request);
@@ -4234,10 +5040,16 @@ bool KRPCI::Flight_get_Radial(uint64_t Flight_ID, double& x, double& y, double& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_Radial_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Radial_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -4257,6 +5069,8 @@ bool KRPCI::Flight_get_AntiRadial_createRequest(uint64_t Flight_ID, krpc::Reques
 
 bool KRPCI::Flight_get_AntiRadial(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_AntiRadial_createRequest(Flight_ID, request);
@@ -4268,10 +5082,16 @@ bool KRPCI::Flight_get_AntiRadial(uint64_t Flight_ID, double& x, double& y, doub
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_AntiRadial_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_AntiRadial_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -4291,6 +5111,8 @@ bool KRPCI::Flight_get_AtmosphereDensity_createRequest(uint64_t Flight_ID, krpc:
 
 bool KRPCI::Flight_get_AtmosphereDensity(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_AtmosphereDensity_createRequest(Flight_ID, request);
@@ -4302,9 +5124,15 @@ bool KRPCI::Flight_get_AtmosphereDensity(uint64_t Flight_ID, float& return_value
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_AtmosphereDensity_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_AtmosphereDensity_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4324,6 +5152,8 @@ bool KRPCI::Flight_get_DynamicPressure_createRequest(uint64_t Flight_ID, krpc::R
 
 bool KRPCI::Flight_get_DynamicPressure(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_DynamicPressure_createRequest(Flight_ID, request);
@@ -4335,9 +5165,15 @@ bool KRPCI::Flight_get_DynamicPressure(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_DynamicPressure_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_DynamicPressure_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4357,6 +5193,8 @@ bool KRPCI::Flight_get_StaticPressure_createRequest(uint64_t Flight_ID, krpc::Re
 
 bool KRPCI::Flight_get_StaticPressure(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_StaticPressure_createRequest(Flight_ID, request);
@@ -4368,9 +5206,15 @@ bool KRPCI::Flight_get_StaticPressure(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_StaticPressure_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_StaticPressure_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4390,6 +5234,8 @@ bool KRPCI::Flight_get_AerodynamicForce_createRequest(uint64_t Flight_ID, krpc::
 
 bool KRPCI::Flight_get_AerodynamicForce(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_AerodynamicForce_createRequest(Flight_ID, request);
@@ -4401,10 +5247,16 @@ bool KRPCI::Flight_get_AerodynamicForce(uint64_t Flight_ID, double& x, double& y
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_AerodynamicForce_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_AerodynamicForce_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -4424,6 +5276,8 @@ bool KRPCI::Flight_get_Lift_createRequest(uint64_t Flight_ID, krpc::Request& req
 
 bool KRPCI::Flight_get_Lift(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Lift_createRequest(Flight_ID, request);
@@ -4435,10 +5289,16 @@ bool KRPCI::Flight_get_Lift(uint64_t Flight_ID, double& x, double& y, double& z)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_Lift_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Lift_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -4458,6 +5318,8 @@ bool KRPCI::Flight_get_Drag_createRequest(uint64_t Flight_ID, krpc::Request& req
 
 bool KRPCI::Flight_get_Drag(uint64_t Flight_ID, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Drag_createRequest(Flight_ID, request);
@@ -4469,10 +5331,16 @@ bool KRPCI::Flight_get_Drag(uint64_t Flight_ID, double& x, double& y, double& z)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Flight_get_Drag_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Drag_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -4492,6 +5360,8 @@ bool KRPCI::Flight_get_SpeedOfSound_createRequest(uint64_t Flight_ID, krpc::Requ
 
 bool KRPCI::Flight_get_SpeedOfSound(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_SpeedOfSound_createRequest(Flight_ID, request);
@@ -4503,9 +5373,15 @@ bool KRPCI::Flight_get_SpeedOfSound(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_SpeedOfSound_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_SpeedOfSound_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4525,6 +5401,8 @@ bool KRPCI::Flight_get_Mach_createRequest(uint64_t Flight_ID, krpc::Request& req
 
 bool KRPCI::Flight_get_Mach(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_Mach_createRequest(Flight_ID, request);
@@ -4536,9 +5414,15 @@ bool KRPCI::Flight_get_Mach(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_Mach_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_Mach_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4558,6 +5442,8 @@ bool KRPCI::Flight_get_EquivalentAirSpeed_createRequest(uint64_t Flight_ID, krpc
 
 bool KRPCI::Flight_get_EquivalentAirSpeed(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_EquivalentAirSpeed_createRequest(Flight_ID, request);
@@ -4569,9 +5455,15 @@ bool KRPCI::Flight_get_EquivalentAirSpeed(uint64_t Flight_ID, float& return_valu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_EquivalentAirSpeed_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_EquivalentAirSpeed_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4591,6 +5483,8 @@ bool KRPCI::Flight_get_TerminalVelocity_createRequest(uint64_t Flight_ID, krpc::
 
 bool KRPCI::Flight_get_TerminalVelocity(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_TerminalVelocity_createRequest(Flight_ID, request);
@@ -4602,9 +5496,15 @@ bool KRPCI::Flight_get_TerminalVelocity(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_TerminalVelocity_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_TerminalVelocity_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4624,6 +5524,8 @@ bool KRPCI::Flight_get_AngleOfAttack_createRequest(uint64_t Flight_ID, krpc::Req
 
 bool KRPCI::Flight_get_AngleOfAttack(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_AngleOfAttack_createRequest(Flight_ID, request);
@@ -4635,9 +5537,15 @@ bool KRPCI::Flight_get_AngleOfAttack(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_AngleOfAttack_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_AngleOfAttack_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4657,6 +5565,8 @@ bool KRPCI::Flight_get_SideslipAngle_createRequest(uint64_t Flight_ID, krpc::Req
 
 bool KRPCI::Flight_get_SideslipAngle(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_SideslipAngle_createRequest(Flight_ID, request);
@@ -4668,9 +5578,15 @@ bool KRPCI::Flight_get_SideslipAngle(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_SideslipAngle_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_SideslipAngle_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4690,6 +5606,8 @@ bool KRPCI::Flight_get_TotalAirTemperature_createRequest(uint64_t Flight_ID, krp
 
 bool KRPCI::Flight_get_TotalAirTemperature(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_TotalAirTemperature_createRequest(Flight_ID, request);
@@ -4701,9 +5619,15 @@ bool KRPCI::Flight_get_TotalAirTemperature(uint64_t Flight_ID, float& return_val
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_TotalAirTemperature_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_TotalAirTemperature_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4723,6 +5647,8 @@ bool KRPCI::Flight_get_StaticAirTemperature_createRequest(uint64_t Flight_ID, kr
 
 bool KRPCI::Flight_get_StaticAirTemperature(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_StaticAirTemperature_createRequest(Flight_ID, request);
@@ -4734,9 +5660,15 @@ bool KRPCI::Flight_get_StaticAirTemperature(uint64_t Flight_ID, float& return_va
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_StaticAirTemperature_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_StaticAirTemperature_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4756,6 +5688,8 @@ bool KRPCI::Flight_get_StallFraction_createRequest(uint64_t Flight_ID, krpc::Req
 
 bool KRPCI::Flight_get_StallFraction(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_StallFraction_createRequest(Flight_ID, request);
@@ -4767,9 +5701,15 @@ bool KRPCI::Flight_get_StallFraction(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_StallFraction_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_StallFraction_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4789,6 +5729,8 @@ bool KRPCI::Flight_get_DragCoefficient_createRequest(uint64_t Flight_ID, krpc::R
 
 bool KRPCI::Flight_get_DragCoefficient(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_DragCoefficient_createRequest(Flight_ID, request);
@@ -4800,9 +5742,15 @@ bool KRPCI::Flight_get_DragCoefficient(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_DragCoefficient_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_DragCoefficient_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4822,6 +5770,8 @@ bool KRPCI::Flight_get_LiftCoefficient_createRequest(uint64_t Flight_ID, krpc::R
 
 bool KRPCI::Flight_get_LiftCoefficient(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_LiftCoefficient_createRequest(Flight_ID, request);
@@ -4833,9 +5783,15 @@ bool KRPCI::Flight_get_LiftCoefficient(uint64_t Flight_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_LiftCoefficient_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_LiftCoefficient_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4855,6 +5811,8 @@ bool KRPCI::Flight_get_PitchingMomentCoefficient_createRequest(uint64_t Flight_I
 
 bool KRPCI::Flight_get_PitchingMomentCoefficient(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_PitchingMomentCoefficient_createRequest(Flight_ID, request);
@@ -4866,9 +5824,15 @@ bool KRPCI::Flight_get_PitchingMomentCoefficient(uint64_t Flight_ID, float& retu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_PitchingMomentCoefficient_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_PitchingMomentCoefficient_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4888,6 +5852,8 @@ bool KRPCI::Flight_get_BallisticCoefficient_createRequest(uint64_t Flight_ID, kr
 
 bool KRPCI::Flight_get_BallisticCoefficient(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_BallisticCoefficient_createRequest(Flight_ID, request);
@@ -4899,9 +5865,15 @@ bool KRPCI::Flight_get_BallisticCoefficient(uint64_t Flight_ID, float& return_va
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_BallisticCoefficient_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_BallisticCoefficient_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4921,6 +5893,8 @@ bool KRPCI::Flight_get_ThrustSpecificFuelConsumption_createRequest(uint64_t Flig
 
 bool KRPCI::Flight_get_ThrustSpecificFuelConsumption(uint64_t Flight_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_ThrustSpecificFuelConsumption_createRequest(Flight_ID, request);
@@ -4932,9 +5906,15 @@ bool KRPCI::Flight_get_ThrustSpecificFuelConsumption(uint64_t Flight_ID, float& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Flight_get_ThrustSpecificFuelConsumption_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_ThrustSpecificFuelConsumption_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -4954,6 +5934,8 @@ bool KRPCI::Flight_get_FARStatus_createRequest(uint64_t Flight_ID, krpc::Request
 
 bool KRPCI::Flight_get_FARStatus(uint64_t Flight_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Flight_get_FARStatus_createRequest(Flight_ID, request);
@@ -4966,6 +5948,11 @@ bool KRPCI::Flight_get_FARStatus(uint64_t Flight_ID, std::string& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Flight_get_FARStatus_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -4991,6 +5978,8 @@ bool KRPCI::Node_BurnVector_createRequest(uint64_t Node_ID, uint64_t referenceFr
 
 bool KRPCI::Node_BurnVector(uint64_t Node_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_BurnVector_createRequest(Node_ID, referenceFrame, request);
@@ -5002,10 +5991,16 @@ bool KRPCI::Node_BurnVector(uint64_t Node_ID, uint64_t referenceFrame, double& x
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Node_BurnVector_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Node_BurnVector_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -5031,6 +6026,8 @@ bool KRPCI::Node_RemainingBurnVector_createRequest(uint64_t Node_ID, uint64_t re
 
 bool KRPCI::Node_RemainingBurnVector(uint64_t Node_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_RemainingBurnVector_createRequest(Node_ID, referenceFrame, request);
@@ -5042,10 +6039,16 @@ bool KRPCI::Node_RemainingBurnVector(uint64_t Node_ID, uint64_t referenceFrame, 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Node_RemainingBurnVector_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Node_RemainingBurnVector_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -5065,6 +6068,8 @@ bool KRPCI::Node_Remove_createRequest(uint64_t Node_ID, krpc::Request& request)
 
 bool KRPCI::Node_Remove(uint64_t Node_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_Remove_createRequest(Node_ID, request);
@@ -5079,6 +6084,7 @@ bool KRPCI::Node_Remove(uint64_t Node_ID)
     }
   return true;
 }
+
 
 bool KRPCI::Node_Position_createRequest(uint64_t Node_ID, uint64_t referenceFrame, krpc::Request& request)
 {
@@ -5102,6 +6108,8 @@ bool KRPCI::Node_Position_createRequest(uint64_t Node_ID, uint64_t referenceFram
 
 bool KRPCI::Node_Position(uint64_t Node_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_Position_createRequest(Node_ID, referenceFrame, request);
@@ -5113,10 +6121,16 @@ bool KRPCI::Node_Position(uint64_t Node_ID, uint64_t referenceFrame, double& x, 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Node_Position_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Node_Position_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -5142,6 +6156,8 @@ bool KRPCI::Node_Direction_createRequest(uint64_t Node_ID, uint64_t referenceFra
 
 bool KRPCI::Node_Direction(uint64_t Node_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_Direction_createRequest(Node_ID, referenceFrame, request);
@@ -5153,10 +6169,16 @@ bool KRPCI::Node_Direction(uint64_t Node_ID, uint64_t referenceFrame, double& x,
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Node_Direction_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Node_Direction_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -5176,6 +6198,8 @@ bool KRPCI::Node_get_Prograde_createRequest(uint64_t Node_ID, krpc::Request& req
 
 bool KRPCI::Node_get_Prograde(uint64_t Node_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_get_Prograde_createRequest(Node_ID, request);
@@ -5187,9 +6211,15 @@ bool KRPCI::Node_get_Prograde(uint64_t Node_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Node_get_Prograde_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Node_get_Prograde_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5213,6 +6243,8 @@ bool KRPCI::Node_set_Prograde_createRequest(uint64_t Node_ID, float value, krpc:
 
 bool KRPCI::Node_set_Prograde(uint64_t Node_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_set_Prograde_createRequest(Node_ID, value, request);
@@ -5227,6 +6259,7 @@ bool KRPCI::Node_set_Prograde(uint64_t Node_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Node_get_Normal_createRequest(uint64_t Node_ID, krpc::Request& request)
 {
@@ -5244,6 +6277,8 @@ bool KRPCI::Node_get_Normal_createRequest(uint64_t Node_ID, krpc::Request& reque
 
 bool KRPCI::Node_get_Normal(uint64_t Node_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_get_Normal_createRequest(Node_ID, request);
@@ -5255,9 +6290,15 @@ bool KRPCI::Node_get_Normal(uint64_t Node_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Node_get_Normal_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Node_get_Normal_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5281,6 +6322,8 @@ bool KRPCI::Node_set_Normal_createRequest(uint64_t Node_ID, float value, krpc::R
 
 bool KRPCI::Node_set_Normal(uint64_t Node_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_set_Normal_createRequest(Node_ID, value, request);
@@ -5295,6 +6338,7 @@ bool KRPCI::Node_set_Normal(uint64_t Node_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Node_get_Radial_createRequest(uint64_t Node_ID, krpc::Request& request)
 {
@@ -5312,6 +6356,8 @@ bool KRPCI::Node_get_Radial_createRequest(uint64_t Node_ID, krpc::Request& reque
 
 bool KRPCI::Node_get_Radial(uint64_t Node_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_get_Radial_createRequest(Node_ID, request);
@@ -5323,9 +6369,15 @@ bool KRPCI::Node_get_Radial(uint64_t Node_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Node_get_Radial_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Node_get_Radial_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5349,6 +6401,8 @@ bool KRPCI::Node_set_Radial_createRequest(uint64_t Node_ID, float value, krpc::R
 
 bool KRPCI::Node_set_Radial(uint64_t Node_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_set_Radial_createRequest(Node_ID, value, request);
@@ -5363,6 +6417,7 @@ bool KRPCI::Node_set_Radial(uint64_t Node_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Node_get_DeltaV_createRequest(uint64_t Node_ID, krpc::Request& request)
 {
@@ -5380,6 +6435,8 @@ bool KRPCI::Node_get_DeltaV_createRequest(uint64_t Node_ID, krpc::Request& reque
 
 bool KRPCI::Node_get_DeltaV(uint64_t Node_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_get_DeltaV_createRequest(Node_ID, request);
@@ -5391,9 +6448,15 @@ bool KRPCI::Node_get_DeltaV(uint64_t Node_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Node_get_DeltaV_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Node_get_DeltaV_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5417,6 +6480,8 @@ bool KRPCI::Node_set_DeltaV_createRequest(uint64_t Node_ID, float value, krpc::R
 
 bool KRPCI::Node_set_DeltaV(uint64_t Node_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_set_DeltaV_createRequest(Node_ID, value, request);
@@ -5431,6 +6496,7 @@ bool KRPCI::Node_set_DeltaV(uint64_t Node_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Node_get_RemainingDeltaV_createRequest(uint64_t Node_ID, krpc::Request& request)
 {
@@ -5448,6 +6514,8 @@ bool KRPCI::Node_get_RemainingDeltaV_createRequest(uint64_t Node_ID, krpc::Reque
 
 bool KRPCI::Node_get_RemainingDeltaV(uint64_t Node_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_get_RemainingDeltaV_createRequest(Node_ID, request);
@@ -5459,9 +6527,15 @@ bool KRPCI::Node_get_RemainingDeltaV(uint64_t Node_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Node_get_RemainingDeltaV_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Node_get_RemainingDeltaV_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5481,6 +6555,8 @@ bool KRPCI::Node_get_UT_createRequest(uint64_t Node_ID, krpc::Request& request)
 
 bool KRPCI::Node_get_UT(uint64_t Node_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_get_UT_createRequest(Node_ID, request);
@@ -5492,9 +6568,15 @@ bool KRPCI::Node_get_UT(uint64_t Node_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Node_get_UT_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Node_get_UT_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5518,6 +6600,8 @@ bool KRPCI::Node_set_UT_createRequest(uint64_t Node_ID, double value, krpc::Requ
 
 bool KRPCI::Node_set_UT(uint64_t Node_ID, double value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_set_UT_createRequest(Node_ID, value, request);
@@ -5532,6 +6616,7 @@ bool KRPCI::Node_set_UT(uint64_t Node_ID, double value)
     }
   return true;
 }
+
 
 bool KRPCI::Node_get_TimeTo_createRequest(uint64_t Node_ID, krpc::Request& request)
 {
@@ -5549,6 +6634,8 @@ bool KRPCI::Node_get_TimeTo_createRequest(uint64_t Node_ID, krpc::Request& reque
 
 bool KRPCI::Node_get_TimeTo(uint64_t Node_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_get_TimeTo_createRequest(Node_ID, request);
@@ -5560,9 +6647,15 @@ bool KRPCI::Node_get_TimeTo(uint64_t Node_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Node_get_TimeTo_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Node_get_TimeTo_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5582,6 +6675,8 @@ bool KRPCI::Node_get_Orbit_createRequest(uint64_t Node_ID, krpc::Request& reques
 
 bool KRPCI::Node_get_Orbit(uint64_t Node_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_get_Orbit_createRequest(Node_ID, request);
@@ -5593,10 +6688,16 @@ bool KRPCI::Node_get_Orbit(uint64_t Node_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Node_get_Orbit_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Node_get_Orbit_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -5616,6 +6717,8 @@ bool KRPCI::Node_get_ReferenceFrame_createRequest(uint64_t Node_ID, krpc::Reques
 
 bool KRPCI::Node_get_ReferenceFrame(uint64_t Node_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_get_ReferenceFrame_createRequest(Node_ID, request);
@@ -5627,10 +6730,16 @@ bool KRPCI::Node_get_ReferenceFrame(uint64_t Node_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Node_get_ReferenceFrame_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Node_get_ReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -5650,6 +6759,8 @@ bool KRPCI::Node_get_OrbitalReferenceFrame_createRequest(uint64_t Node_ID, krpc:
 
 bool KRPCI::Node_get_OrbitalReferenceFrame(uint64_t Node_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Node_get_OrbitalReferenceFrame_createRequest(Node_ID, request);
@@ -5661,10 +6772,16 @@ bool KRPCI::Node_get_OrbitalReferenceFrame(uint64_t Node_ID, uint64_t& return_va
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Node_get_OrbitalReferenceFrame_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Node_get_OrbitalReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -5684,6 +6801,8 @@ bool KRPCI::Orbit_ReferencePlaneNormal_createRequest(uint64_t referenceFrame, kr
 
 bool KRPCI::Orbit_ReferencePlaneNormal(uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_ReferencePlaneNormal_createRequest(referenceFrame, request);
@@ -5695,10 +6814,16 @@ bool KRPCI::Orbit_ReferencePlaneNormal(uint64_t referenceFrame, double& x, doubl
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Orbit_ReferencePlaneNormal_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_ReferencePlaneNormal_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -5718,6 +6843,8 @@ bool KRPCI::Orbit_ReferencePlaneDirection_createRequest(uint64_t referenceFrame,
 
 bool KRPCI::Orbit_ReferencePlaneDirection(uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_ReferencePlaneDirection_createRequest(referenceFrame, request);
@@ -5729,10 +6856,16 @@ bool KRPCI::Orbit_ReferencePlaneDirection(uint64_t referenceFrame, double& x, do
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Orbit_ReferencePlaneDirection_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_ReferencePlaneDirection_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -5752,6 +6885,8 @@ bool KRPCI::Orbit_get_Body_createRequest(uint64_t Orbit_ID, krpc::Request& reque
 
 bool KRPCI::Orbit_get_Body(uint64_t Orbit_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_Body_createRequest(Orbit_ID, request);
@@ -5763,10 +6898,16 @@ bool KRPCI::Orbit_get_Body(uint64_t Orbit_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Orbit_get_Body_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_Body_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -5786,6 +6927,8 @@ bool KRPCI::Orbit_get_Apoapsis_createRequest(uint64_t Orbit_ID, krpc::Request& r
 
 bool KRPCI::Orbit_get_Apoapsis(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_Apoapsis_createRequest(Orbit_ID, request);
@@ -5797,9 +6940,15 @@ bool KRPCI::Orbit_get_Apoapsis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_Apoapsis_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_Apoapsis_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5819,6 +6968,8 @@ bool KRPCI::Orbit_get_Periapsis_createRequest(uint64_t Orbit_ID, krpc::Request& 
 
 bool KRPCI::Orbit_get_Periapsis(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_Periapsis_createRequest(Orbit_ID, request);
@@ -5830,9 +6981,15 @@ bool KRPCI::Orbit_get_Periapsis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_Periapsis_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_Periapsis_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5852,6 +7009,8 @@ bool KRPCI::Orbit_get_ApoapsisAltitude_createRequest(uint64_t Orbit_ID, krpc::Re
 
 bool KRPCI::Orbit_get_ApoapsisAltitude(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_ApoapsisAltitude_createRequest(Orbit_ID, request);
@@ -5863,9 +7022,15 @@ bool KRPCI::Orbit_get_ApoapsisAltitude(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_ApoapsisAltitude_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_ApoapsisAltitude_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5885,6 +7050,8 @@ bool KRPCI::Orbit_get_PeriapsisAltitude_createRequest(uint64_t Orbit_ID, krpc::R
 
 bool KRPCI::Orbit_get_PeriapsisAltitude(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_PeriapsisAltitude_createRequest(Orbit_ID, request);
@@ -5896,9 +7063,15 @@ bool KRPCI::Orbit_get_PeriapsisAltitude(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_PeriapsisAltitude_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_PeriapsisAltitude_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5918,6 +7091,8 @@ bool KRPCI::Orbit_get_SemiMajorAxis_createRequest(uint64_t Orbit_ID, krpc::Reque
 
 bool KRPCI::Orbit_get_SemiMajorAxis(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_SemiMajorAxis_createRequest(Orbit_ID, request);
@@ -5929,9 +7104,15 @@ bool KRPCI::Orbit_get_SemiMajorAxis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_SemiMajorAxis_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_SemiMajorAxis_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5951,6 +7132,8 @@ bool KRPCI::Orbit_get_SemiMinorAxis_createRequest(uint64_t Orbit_ID, krpc::Reque
 
 bool KRPCI::Orbit_get_SemiMinorAxis(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_SemiMinorAxis_createRequest(Orbit_ID, request);
@@ -5962,9 +7145,15 @@ bool KRPCI::Orbit_get_SemiMinorAxis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_SemiMinorAxis_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_SemiMinorAxis_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -5984,6 +7173,8 @@ bool KRPCI::Orbit_get_Radius_createRequest(uint64_t Orbit_ID, krpc::Request& req
 
 bool KRPCI::Orbit_get_Radius(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_Radius_createRequest(Orbit_ID, request);
@@ -5995,9 +7186,15 @@ bool KRPCI::Orbit_get_Radius(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_Radius_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_Radius_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6017,6 +7214,8 @@ bool KRPCI::Orbit_get_Speed_createRequest(uint64_t Orbit_ID, krpc::Request& requ
 
 bool KRPCI::Orbit_get_Speed(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_Speed_createRequest(Orbit_ID, request);
@@ -6028,9 +7227,15 @@ bool KRPCI::Orbit_get_Speed(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_Speed_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_Speed_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6050,6 +7255,8 @@ bool KRPCI::Orbit_get_Period_createRequest(uint64_t Orbit_ID, krpc::Request& req
 
 bool KRPCI::Orbit_get_Period(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_Period_createRequest(Orbit_ID, request);
@@ -6061,9 +7268,15 @@ bool KRPCI::Orbit_get_Period(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_Period_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_Period_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6083,6 +7296,8 @@ bool KRPCI::Orbit_get_TimeToApoapsis_createRequest(uint64_t Orbit_ID, krpc::Requ
 
 bool KRPCI::Orbit_get_TimeToApoapsis(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_TimeToApoapsis_createRequest(Orbit_ID, request);
@@ -6094,9 +7309,15 @@ bool KRPCI::Orbit_get_TimeToApoapsis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_TimeToApoapsis_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_TimeToApoapsis_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6116,6 +7337,8 @@ bool KRPCI::Orbit_get_TimeToPeriapsis_createRequest(uint64_t Orbit_ID, krpc::Req
 
 bool KRPCI::Orbit_get_TimeToPeriapsis(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_TimeToPeriapsis_createRequest(Orbit_ID, request);
@@ -6127,9 +7350,15 @@ bool KRPCI::Orbit_get_TimeToPeriapsis(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_TimeToPeriapsis_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_TimeToPeriapsis_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6149,6 +7378,8 @@ bool KRPCI::Orbit_get_Eccentricity_createRequest(uint64_t Orbit_ID, krpc::Reques
 
 bool KRPCI::Orbit_get_Eccentricity(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_Eccentricity_createRequest(Orbit_ID, request);
@@ -6160,9 +7391,15 @@ bool KRPCI::Orbit_get_Eccentricity(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_Eccentricity_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_Eccentricity_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6182,6 +7419,8 @@ bool KRPCI::Orbit_get_Inclination_createRequest(uint64_t Orbit_ID, krpc::Request
 
 bool KRPCI::Orbit_get_Inclination(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_Inclination_createRequest(Orbit_ID, request);
@@ -6193,9 +7432,15 @@ bool KRPCI::Orbit_get_Inclination(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_Inclination_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_Inclination_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6215,6 +7460,8 @@ bool KRPCI::Orbit_get_LongitudeOfAscendingNode_createRequest(uint64_t Orbit_ID, 
 
 bool KRPCI::Orbit_get_LongitudeOfAscendingNode(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_LongitudeOfAscendingNode_createRequest(Orbit_ID, request);
@@ -6226,9 +7473,15 @@ bool KRPCI::Orbit_get_LongitudeOfAscendingNode(uint64_t Orbit_ID, double& return
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_LongitudeOfAscendingNode_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_LongitudeOfAscendingNode_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6248,6 +7501,8 @@ bool KRPCI::Orbit_get_ArgumentOfPeriapsis_createRequest(uint64_t Orbit_ID, krpc:
 
 bool KRPCI::Orbit_get_ArgumentOfPeriapsis(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_ArgumentOfPeriapsis_createRequest(Orbit_ID, request);
@@ -6259,9 +7514,15 @@ bool KRPCI::Orbit_get_ArgumentOfPeriapsis(uint64_t Orbit_ID, double& return_valu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_ArgumentOfPeriapsis_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_ArgumentOfPeriapsis_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6281,6 +7542,8 @@ bool KRPCI::Orbit_get_MeanAnomalyAtEpoch_createRequest(uint64_t Orbit_ID, krpc::
 
 bool KRPCI::Orbit_get_MeanAnomalyAtEpoch(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_MeanAnomalyAtEpoch_createRequest(Orbit_ID, request);
@@ -6292,9 +7555,15 @@ bool KRPCI::Orbit_get_MeanAnomalyAtEpoch(uint64_t Orbit_ID, double& return_value
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_MeanAnomalyAtEpoch_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_MeanAnomalyAtEpoch_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6314,6 +7583,8 @@ bool KRPCI::Orbit_get_Epoch_createRequest(uint64_t Orbit_ID, krpc::Request& requ
 
 bool KRPCI::Orbit_get_Epoch(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_Epoch_createRequest(Orbit_ID, request);
@@ -6325,9 +7596,15 @@ bool KRPCI::Orbit_get_Epoch(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_Epoch_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_Epoch_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6347,6 +7624,8 @@ bool KRPCI::Orbit_get_MeanAnomaly_createRequest(uint64_t Orbit_ID, krpc::Request
 
 bool KRPCI::Orbit_get_MeanAnomaly(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_MeanAnomaly_createRequest(Orbit_ID, request);
@@ -6358,9 +7637,15 @@ bool KRPCI::Orbit_get_MeanAnomaly(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_MeanAnomaly_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_MeanAnomaly_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6380,6 +7665,8 @@ bool KRPCI::Orbit_get_EccentricAnomaly_createRequest(uint64_t Orbit_ID, krpc::Re
 
 bool KRPCI::Orbit_get_EccentricAnomaly(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_EccentricAnomaly_createRequest(Orbit_ID, request);
@@ -6391,9 +7678,15 @@ bool KRPCI::Orbit_get_EccentricAnomaly(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_EccentricAnomaly_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_EccentricAnomaly_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6413,6 +7706,8 @@ bool KRPCI::Orbit_get_NextOrbit_createRequest(uint64_t Orbit_ID, krpc::Request& 
 
 bool KRPCI::Orbit_get_NextOrbit(uint64_t Orbit_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_NextOrbit_createRequest(Orbit_ID, request);
@@ -6424,10 +7719,16 @@ bool KRPCI::Orbit_get_NextOrbit(uint64_t Orbit_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Orbit_get_NextOrbit_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_NextOrbit_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -6447,6 +7748,8 @@ bool KRPCI::Orbit_get_TimeToSOIChange_createRequest(uint64_t Orbit_ID, krpc::Req
 
 bool KRPCI::Orbit_get_TimeToSOIChange(uint64_t Orbit_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Orbit_get_TimeToSOIChange_createRequest(Orbit_ID, request);
@@ -6458,9 +7761,15 @@ bool KRPCI::Orbit_get_TimeToSOIChange(uint64_t Orbit_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Orbit_get_TimeToSOIChange_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Orbit_get_TimeToSOIChange_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6480,6 +7789,8 @@ bool KRPCI::Decoupler_Decouple_createRequest(uint64_t Decoupler_ID, krpc::Reques
 
 bool KRPCI::Decoupler_Decouple(uint64_t Decoupler_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Decoupler_Decouple_createRequest(Decoupler_ID, request);
@@ -6494,6 +7805,7 @@ bool KRPCI::Decoupler_Decouple(uint64_t Decoupler_ID)
     }
   return true;
 }
+
 
 bool KRPCI::Decoupler_get_Part_createRequest(uint64_t Decoupler_ID, krpc::Request& request)
 {
@@ -6511,6 +7823,8 @@ bool KRPCI::Decoupler_get_Part_createRequest(uint64_t Decoupler_ID, krpc::Reques
 
 bool KRPCI::Decoupler_get_Part(uint64_t Decoupler_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Decoupler_get_Part_createRequest(Decoupler_ID, request);
@@ -6522,10 +7836,16 @@ bool KRPCI::Decoupler_get_Part(uint64_t Decoupler_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Decoupler_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Decoupler_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -6545,6 +7865,8 @@ bool KRPCI::Decoupler_get_Decoupled_createRequest(uint64_t Decoupler_ID, krpc::R
 
 bool KRPCI::Decoupler_get_Decoupled(uint64_t Decoupler_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Decoupler_get_Decoupled_createRequest(Decoupler_ID, request);
@@ -6557,6 +7879,11 @@ bool KRPCI::Decoupler_get_Decoupled(uint64_t Decoupler_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Decoupler_get_Decoupled_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -6576,6 +7903,8 @@ bool KRPCI::Decoupler_get_Impulse_createRequest(uint64_t Decoupler_ID, krpc::Req
 
 bool KRPCI::Decoupler_get_Impulse(uint64_t Decoupler_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Decoupler_get_Impulse_createRequest(Decoupler_ID, request);
@@ -6587,9 +7916,15 @@ bool KRPCI::Decoupler_get_Impulse(uint64_t Decoupler_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Decoupler_get_Impulse_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Decoupler_get_Impulse_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6609,6 +7944,8 @@ bool KRPCI::DockingPort_Undock_createRequest(uint64_t DockingPort_ID, krpc::Requ
 
 bool KRPCI::DockingPort_Undock(uint64_t DockingPort_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_Undock_createRequest(DockingPort_ID, request);
@@ -6620,10 +7957,16 @@ bool KRPCI::DockingPort_Undock(uint64_t DockingPort_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      DockingPort_Undock_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_Undock_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -6649,6 +7992,8 @@ bool KRPCI::DockingPort_Position_createRequest(uint64_t DockingPort_ID, uint64_t
 
 bool KRPCI::DockingPort_Position(uint64_t DockingPort_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_Position_createRequest(DockingPort_ID, referenceFrame, request);
@@ -6660,10 +8005,16 @@ bool KRPCI::DockingPort_Position(uint64_t DockingPort_ID, uint64_t referenceFram
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      DockingPort_Position_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_Position_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -6689,6 +8040,8 @@ bool KRPCI::DockingPort_Direction_createRequest(uint64_t DockingPort_ID, uint64_
 
 bool KRPCI::DockingPort_Direction(uint64_t DockingPort_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_Direction_createRequest(DockingPort_ID, referenceFrame, request);
@@ -6700,10 +8053,16 @@ bool KRPCI::DockingPort_Direction(uint64_t DockingPort_ID, uint64_t referenceFra
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      DockingPort_Direction_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_Direction_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -6729,6 +8088,8 @@ bool KRPCI::DockingPort_Rotation_createRequest(uint64_t DockingPort_ID, uint64_t
 
 bool KRPCI::DockingPort_Rotation(uint64_t DockingPort_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_Rotation_createRequest(DockingPort_ID, referenceFrame, request);
@@ -6740,10 +8101,16 @@ bool KRPCI::DockingPort_Rotation(uint64_t DockingPort_ID, uint64_t referenceFram
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      DockingPort_Rotation_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_Rotation_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -6763,6 +8130,8 @@ bool KRPCI::DockingPort_get_Part_createRequest(uint64_t DockingPort_ID, krpc::Re
 
 bool KRPCI::DockingPort_get_Part(uint64_t DockingPort_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_get_Part_createRequest(DockingPort_ID, request);
@@ -6774,10 +8143,16 @@ bool KRPCI::DockingPort_get_Part(uint64_t DockingPort_ID, uint64_t& return_value
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      DockingPort_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -6797,6 +8172,8 @@ bool KRPCI::DockingPort_get_Name_createRequest(uint64_t DockingPort_ID, krpc::Re
 
 bool KRPCI::DockingPort_get_Name(uint64_t DockingPort_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_get_Name_createRequest(DockingPort_ID, request);
@@ -6809,6 +8186,11 @@ bool KRPCI::DockingPort_get_Name(uint64_t DockingPort_ID, std::string& return_va
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_get_Name_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -6830,6 +8212,8 @@ bool KRPCI::DockingPort_set_Name_createRequest(uint64_t DockingPort_ID, std::str
 
 bool KRPCI::DockingPort_set_Name(uint64_t DockingPort_ID, std::string value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_set_Name_createRequest(DockingPort_ID, value, request);
@@ -6844,6 +8228,7 @@ bool KRPCI::DockingPort_set_Name(uint64_t DockingPort_ID, std::string value)
     }
   return true;
 }
+
 
 bool KRPCI::DockingPort_get_State_createRequest(uint64_t DockingPort_ID, krpc::Request& request)
 {
@@ -6861,6 +8246,8 @@ bool KRPCI::DockingPort_get_State_createRequest(uint64_t DockingPort_ID, krpc::R
 
 bool KRPCI::DockingPort_get_State(uint64_t DockingPort_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_get_State_createRequest(DockingPort_ID, request);
@@ -6873,6 +8260,11 @@ bool KRPCI::DockingPort_get_State(uint64_t DockingPort_ID, int32_t& return_value
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_get_State_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -6892,6 +8284,8 @@ bool KRPCI::DockingPort_get_DockedPart_createRequest(uint64_t DockingPort_ID, kr
 
 bool KRPCI::DockingPort_get_DockedPart(uint64_t DockingPort_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_get_DockedPart_createRequest(DockingPort_ID, request);
@@ -6903,10 +8297,16 @@ bool KRPCI::DockingPort_get_DockedPart(uint64_t DockingPort_ID, uint64_t& return
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      DockingPort_get_DockedPart_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_get_DockedPart_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -6926,6 +8326,8 @@ bool KRPCI::DockingPort_get_ReengageDistance_createRequest(uint64_t DockingPort_
 
 bool KRPCI::DockingPort_get_ReengageDistance(uint64_t DockingPort_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_get_ReengageDistance_createRequest(DockingPort_ID, request);
@@ -6937,9 +8339,15 @@ bool KRPCI::DockingPort_get_ReengageDistance(uint64_t DockingPort_ID, float& ret
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      DockingPort_get_ReengageDistance_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_get_ReengageDistance_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -6959,6 +8367,8 @@ bool KRPCI::DockingPort_get_HasShield_createRequest(uint64_t DockingPort_ID, krp
 
 bool KRPCI::DockingPort_get_HasShield(uint64_t DockingPort_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_get_HasShield_createRequest(DockingPort_ID, request);
@@ -6971,6 +8381,11 @@ bool KRPCI::DockingPort_get_HasShield(uint64_t DockingPort_ID, bool& return_valu
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_get_HasShield_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -6990,6 +8405,8 @@ bool KRPCI::DockingPort_get_Shielded_createRequest(uint64_t DockingPort_ID, krpc
 
 bool KRPCI::DockingPort_get_Shielded(uint64_t DockingPort_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_get_Shielded_createRequest(DockingPort_ID, request);
@@ -7002,6 +8419,11 @@ bool KRPCI::DockingPort_get_Shielded(uint64_t DockingPort_ID, bool& return_value
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_get_Shielded_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -7027,6 +8449,8 @@ bool KRPCI::DockingPort_set_Shielded_createRequest(uint64_t DockingPort_ID, bool
 
 bool KRPCI::DockingPort_set_Shielded(uint64_t DockingPort_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_set_Shielded_createRequest(DockingPort_ID, value, request);
@@ -7041,6 +8465,7 @@ bool KRPCI::DockingPort_set_Shielded(uint64_t DockingPort_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::DockingPort_get_ReferenceFrame_createRequest(uint64_t DockingPort_ID, krpc::Request& request)
 {
@@ -7058,6 +8483,8 @@ bool KRPCI::DockingPort_get_ReferenceFrame_createRequest(uint64_t DockingPort_ID
 
 bool KRPCI::DockingPort_get_ReferenceFrame(uint64_t DockingPort_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::DockingPort_get_ReferenceFrame_createRequest(DockingPort_ID, request);
@@ -7069,10 +8496,16 @@ bool KRPCI::DockingPort_get_ReferenceFrame(uint64_t DockingPort_ID, uint64_t& re
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      DockingPort_get_ReferenceFrame_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::DockingPort_get_ReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -7092,6 +8525,8 @@ bool KRPCI::Engine_get_Part_createRequest(uint64_t Engine_ID, krpc::Request& req
 
 bool KRPCI::Engine_get_Part(uint64_t Engine_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_Part_createRequest(Engine_ID, request);
@@ -7103,10 +8538,16 @@ bool KRPCI::Engine_get_Part(uint64_t Engine_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Engine_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -7126,6 +8567,8 @@ bool KRPCI::Engine_get_Active_createRequest(uint64_t Engine_ID, krpc::Request& r
 
 bool KRPCI::Engine_get_Active(uint64_t Engine_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_Active_createRequest(Engine_ID, request);
@@ -7138,6 +8581,11 @@ bool KRPCI::Engine_get_Active(uint64_t Engine_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_Active_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -7163,6 +8611,8 @@ bool KRPCI::Engine_set_Active_createRequest(uint64_t Engine_ID, bool value, krpc
 
 bool KRPCI::Engine_set_Active(uint64_t Engine_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_set_Active_createRequest(Engine_ID, value, request);
@@ -7177,6 +8627,7 @@ bool KRPCI::Engine_set_Active(uint64_t Engine_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Engine_get_Thrust_createRequest(uint64_t Engine_ID, krpc::Request& request)
 {
@@ -7194,6 +8645,8 @@ bool KRPCI::Engine_get_Thrust_createRequest(uint64_t Engine_ID, krpc::Request& r
 
 bool KRPCI::Engine_get_Thrust(uint64_t Engine_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_Thrust_createRequest(Engine_ID, request);
@@ -7205,9 +8658,15 @@ bool KRPCI::Engine_get_Thrust(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Engine_get_Thrust_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_Thrust_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -7227,6 +8686,8 @@ bool KRPCI::Engine_get_AvailableThrust_createRequest(uint64_t Engine_ID, krpc::R
 
 bool KRPCI::Engine_get_AvailableThrust(uint64_t Engine_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_AvailableThrust_createRequest(Engine_ID, request);
@@ -7238,9 +8699,15 @@ bool KRPCI::Engine_get_AvailableThrust(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Engine_get_AvailableThrust_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_AvailableThrust_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -7260,6 +8727,8 @@ bool KRPCI::Engine_get_MaxThrust_createRequest(uint64_t Engine_ID, krpc::Request
 
 bool KRPCI::Engine_get_MaxThrust(uint64_t Engine_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_MaxThrust_createRequest(Engine_ID, request);
@@ -7271,9 +8740,15 @@ bool KRPCI::Engine_get_MaxThrust(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Engine_get_MaxThrust_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_MaxThrust_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -7293,6 +8768,8 @@ bool KRPCI::Engine_get_MaxVacuumThrust_createRequest(uint64_t Engine_ID, krpc::R
 
 bool KRPCI::Engine_get_MaxVacuumThrust(uint64_t Engine_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_MaxVacuumThrust_createRequest(Engine_ID, request);
@@ -7304,9 +8781,15 @@ bool KRPCI::Engine_get_MaxVacuumThrust(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Engine_get_MaxVacuumThrust_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_MaxVacuumThrust_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -7326,6 +8809,8 @@ bool KRPCI::Engine_get_ThrustLimit_createRequest(uint64_t Engine_ID, krpc::Reque
 
 bool KRPCI::Engine_get_ThrustLimit(uint64_t Engine_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_ThrustLimit_createRequest(Engine_ID, request);
@@ -7337,9 +8822,15 @@ bool KRPCI::Engine_get_ThrustLimit(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Engine_get_ThrustLimit_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_ThrustLimit_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -7363,6 +8854,8 @@ bool KRPCI::Engine_set_ThrustLimit_createRequest(uint64_t Engine_ID, float value
 
 bool KRPCI::Engine_set_ThrustLimit(uint64_t Engine_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_set_ThrustLimit_createRequest(Engine_ID, value, request);
@@ -7377,6 +8870,7 @@ bool KRPCI::Engine_set_ThrustLimit(uint64_t Engine_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Engine_get_SpecificImpulse_createRequest(uint64_t Engine_ID, krpc::Request& request)
 {
@@ -7394,6 +8888,8 @@ bool KRPCI::Engine_get_SpecificImpulse_createRequest(uint64_t Engine_ID, krpc::R
 
 bool KRPCI::Engine_get_SpecificImpulse(uint64_t Engine_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_SpecificImpulse_createRequest(Engine_ID, request);
@@ -7405,9 +8901,15 @@ bool KRPCI::Engine_get_SpecificImpulse(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Engine_get_SpecificImpulse_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_SpecificImpulse_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -7427,6 +8929,8 @@ bool KRPCI::Engine_get_VacuumSpecificImpulse_createRequest(uint64_t Engine_ID, k
 
 bool KRPCI::Engine_get_VacuumSpecificImpulse(uint64_t Engine_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_VacuumSpecificImpulse_createRequest(Engine_ID, request);
@@ -7438,9 +8942,15 @@ bool KRPCI::Engine_get_VacuumSpecificImpulse(uint64_t Engine_ID, float& return_v
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Engine_get_VacuumSpecificImpulse_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_VacuumSpecificImpulse_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -7460,6 +8970,8 @@ bool KRPCI::Engine_get_KerbinSeaLevelSpecificImpulse_createRequest(uint64_t Engi
 
 bool KRPCI::Engine_get_KerbinSeaLevelSpecificImpulse(uint64_t Engine_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_KerbinSeaLevelSpecificImpulse_createRequest(Engine_ID, request);
@@ -7471,9 +8983,15 @@ bool KRPCI::Engine_get_KerbinSeaLevelSpecificImpulse(uint64_t Engine_ID, float& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Engine_get_KerbinSeaLevelSpecificImpulse_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_KerbinSeaLevelSpecificImpulse_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -7493,6 +9011,8 @@ bool KRPCI::Engine_get_Propellants_createRequest(uint64_t Engine_ID, krpc::Reque
 
 bool KRPCI::Engine_get_Propellants(uint64_t Engine_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_Propellants_createRequest(Engine_ID, request);
@@ -7504,16 +9024,22 @@ bool KRPCI::Engine_get_Propellants(uint64_t Engine_ID, std::vector<uint64_t>& re
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Engine_get_Propellants_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Engine_get_Propellants_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -7534,6 +9060,8 @@ bool KRPCI::Engine_get_PropellantRatios_createRequest(uint64_t Engine_ID, krpc::
 
 bool KRPCI::Engine_get_PropellantRatios(uint64_t Engine_ID, krpc::Dictionary& return_dict)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_PropellantRatios_createRequest(Engine_ID, request);
@@ -7546,6 +9074,11 @@ bool KRPCI::Engine_get_PropellantRatios(uint64_t Engine_ID, krpc::Dictionary& re
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_PropellantRatios_parseResponse(krpc::Response response, krpc::Dictionary& return_dict)
+{
   return true;
 }
 
@@ -7565,6 +9098,8 @@ bool KRPCI::Engine_get_HasFuel_createRequest(uint64_t Engine_ID, krpc::Request& 
 
 bool KRPCI::Engine_get_HasFuel(uint64_t Engine_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_HasFuel_createRequest(Engine_ID, request);
@@ -7577,6 +9112,11 @@ bool KRPCI::Engine_get_HasFuel(uint64_t Engine_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_HasFuel_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -7596,6 +9136,8 @@ bool KRPCI::Engine_get_Throttle_createRequest(uint64_t Engine_ID, krpc::Request&
 
 bool KRPCI::Engine_get_Throttle(uint64_t Engine_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_Throttle_createRequest(Engine_ID, request);
@@ -7607,9 +9149,15 @@ bool KRPCI::Engine_get_Throttle(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Engine_get_Throttle_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_Throttle_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -7629,6 +9177,8 @@ bool KRPCI::Engine_get_ThrottleLocked_createRequest(uint64_t Engine_ID, krpc::Re
 
 bool KRPCI::Engine_get_ThrottleLocked(uint64_t Engine_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_ThrottleLocked_createRequest(Engine_ID, request);
@@ -7641,6 +9191,11 @@ bool KRPCI::Engine_get_ThrottleLocked(uint64_t Engine_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_ThrottleLocked_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -7660,6 +9215,8 @@ bool KRPCI::Engine_get_CanRestart_createRequest(uint64_t Engine_ID, krpc::Reques
 
 bool KRPCI::Engine_get_CanRestart(uint64_t Engine_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_CanRestart_createRequest(Engine_ID, request);
@@ -7672,6 +9229,11 @@ bool KRPCI::Engine_get_CanRestart(uint64_t Engine_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_CanRestart_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -7691,6 +9253,8 @@ bool KRPCI::Engine_get_CanShutdown_createRequest(uint64_t Engine_ID, krpc::Reque
 
 bool KRPCI::Engine_get_CanShutdown(uint64_t Engine_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_CanShutdown_createRequest(Engine_ID, request);
@@ -7703,6 +9267,11 @@ bool KRPCI::Engine_get_CanShutdown(uint64_t Engine_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_CanShutdown_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -7722,6 +9291,8 @@ bool KRPCI::Engine_get_Gimballed_createRequest(uint64_t Engine_ID, krpc::Request
 
 bool KRPCI::Engine_get_Gimballed(uint64_t Engine_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_Gimballed_createRequest(Engine_ID, request);
@@ -7734,6 +9305,11 @@ bool KRPCI::Engine_get_Gimballed(uint64_t Engine_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_Gimballed_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -7753,6 +9329,8 @@ bool KRPCI::Engine_get_GimbalRange_createRequest(uint64_t Engine_ID, krpc::Reque
 
 bool KRPCI::Engine_get_GimbalRange(uint64_t Engine_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_GimbalRange_createRequest(Engine_ID, request);
@@ -7764,9 +9342,15 @@ bool KRPCI::Engine_get_GimbalRange(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Engine_get_GimbalRange_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_GimbalRange_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -7786,6 +9370,8 @@ bool KRPCI::Engine_get_GimbalLocked_createRequest(uint64_t Engine_ID, krpc::Requ
 
 bool KRPCI::Engine_get_GimbalLocked(uint64_t Engine_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_GimbalLocked_createRequest(Engine_ID, request);
@@ -7798,6 +9384,11 @@ bool KRPCI::Engine_get_GimbalLocked(uint64_t Engine_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_GimbalLocked_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -7823,6 +9414,8 @@ bool KRPCI::Engine_set_GimbalLocked_createRequest(uint64_t Engine_ID, bool value
 
 bool KRPCI::Engine_set_GimbalLocked(uint64_t Engine_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_set_GimbalLocked_createRequest(Engine_ID, value, request);
@@ -7837,6 +9430,7 @@ bool KRPCI::Engine_set_GimbalLocked(uint64_t Engine_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Engine_get_GimbalLimit_createRequest(uint64_t Engine_ID, krpc::Request& request)
 {
@@ -7854,6 +9448,8 @@ bool KRPCI::Engine_get_GimbalLimit_createRequest(uint64_t Engine_ID, krpc::Reque
 
 bool KRPCI::Engine_get_GimbalLimit(uint64_t Engine_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_get_GimbalLimit_createRequest(Engine_ID, request);
@@ -7865,9 +9461,15 @@ bool KRPCI::Engine_get_GimbalLimit(uint64_t Engine_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Engine_get_GimbalLimit_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Engine_get_GimbalLimit_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -7891,6 +9493,8 @@ bool KRPCI::Engine_set_GimbalLimit_createRequest(uint64_t Engine_ID, float value
 
 bool KRPCI::Engine_set_GimbalLimit(uint64_t Engine_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Engine_set_GimbalLimit_createRequest(Engine_ID, value, request);
@@ -7905,6 +9509,7 @@ bool KRPCI::Engine_set_GimbalLimit(uint64_t Engine_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::LandingGear_get_Part_createRequest(uint64_t LandingGear_ID, krpc::Request& request)
 {
@@ -7922,6 +9527,8 @@ bool KRPCI::LandingGear_get_Part_createRequest(uint64_t LandingGear_ID, krpc::Re
 
 bool KRPCI::LandingGear_get_Part(uint64_t LandingGear_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::LandingGear_get_Part_createRequest(LandingGear_ID, request);
@@ -7933,10 +9540,16 @@ bool KRPCI::LandingGear_get_Part(uint64_t LandingGear_ID, uint64_t& return_value
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      LandingGear_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::LandingGear_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -7956,6 +9569,8 @@ bool KRPCI::LandingGear_get_State_createRequest(uint64_t LandingGear_ID, krpc::R
 
 bool KRPCI::LandingGear_get_State(uint64_t LandingGear_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::LandingGear_get_State_createRequest(LandingGear_ID, request);
@@ -7968,6 +9583,11 @@ bool KRPCI::LandingGear_get_State(uint64_t LandingGear_ID, int32_t& return_value
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::LandingGear_get_State_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -7987,6 +9607,8 @@ bool KRPCI::LandingGear_get_Deployed_createRequest(uint64_t LandingGear_ID, krpc
 
 bool KRPCI::LandingGear_get_Deployed(uint64_t LandingGear_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::LandingGear_get_Deployed_createRequest(LandingGear_ID, request);
@@ -7999,6 +9621,11 @@ bool KRPCI::LandingGear_get_Deployed(uint64_t LandingGear_ID, bool& return_value
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::LandingGear_get_Deployed_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -8024,6 +9651,8 @@ bool KRPCI::LandingGear_set_Deployed_createRequest(uint64_t LandingGear_ID, bool
 
 bool KRPCI::LandingGear_set_Deployed(uint64_t LandingGear_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::LandingGear_set_Deployed_createRequest(LandingGear_ID, value, request);
@@ -8038,6 +9667,7 @@ bool KRPCI::LandingGear_set_Deployed(uint64_t LandingGear_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::LandingLeg_get_Part_createRequest(uint64_t LandingLeg_ID, krpc::Request& request)
 {
@@ -8055,6 +9685,8 @@ bool KRPCI::LandingLeg_get_Part_createRequest(uint64_t LandingLeg_ID, krpc::Requ
 
 bool KRPCI::LandingLeg_get_Part(uint64_t LandingLeg_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::LandingLeg_get_Part_createRequest(LandingLeg_ID, request);
@@ -8066,10 +9698,16 @@ bool KRPCI::LandingLeg_get_Part(uint64_t LandingLeg_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      LandingLeg_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::LandingLeg_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -8089,6 +9727,8 @@ bool KRPCI::LandingLeg_get_State_createRequest(uint64_t LandingLeg_ID, krpc::Req
 
 bool KRPCI::LandingLeg_get_State(uint64_t LandingLeg_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::LandingLeg_get_State_createRequest(LandingLeg_ID, request);
@@ -8101,6 +9741,11 @@ bool KRPCI::LandingLeg_get_State(uint64_t LandingLeg_ID, int32_t& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::LandingLeg_get_State_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -8120,6 +9765,8 @@ bool KRPCI::LandingLeg_get_Deployed_createRequest(uint64_t LandingLeg_ID, krpc::
 
 bool KRPCI::LandingLeg_get_Deployed(uint64_t LandingLeg_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::LandingLeg_get_Deployed_createRequest(LandingLeg_ID, request);
@@ -8132,6 +9779,11 @@ bool KRPCI::LandingLeg_get_Deployed(uint64_t LandingLeg_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::LandingLeg_get_Deployed_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -8157,6 +9809,8 @@ bool KRPCI::LandingLeg_set_Deployed_createRequest(uint64_t LandingLeg_ID, bool v
 
 bool KRPCI::LandingLeg_set_Deployed(uint64_t LandingLeg_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::LandingLeg_set_Deployed_createRequest(LandingLeg_ID, value, request);
@@ -8171,6 +9825,7 @@ bool KRPCI::LandingLeg_set_Deployed(uint64_t LandingLeg_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::LaunchClamp_Release_createRequest(uint64_t LaunchClamp_ID, krpc::Request& request)
 {
@@ -8188,6 +9843,8 @@ bool KRPCI::LaunchClamp_Release_createRequest(uint64_t LaunchClamp_ID, krpc::Req
 
 bool KRPCI::LaunchClamp_Release(uint64_t LaunchClamp_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::LaunchClamp_Release_createRequest(LaunchClamp_ID, request);
@@ -8202,6 +9859,7 @@ bool KRPCI::LaunchClamp_Release(uint64_t LaunchClamp_ID)
     }
   return true;
 }
+
 
 bool KRPCI::LaunchClamp_get_Part_createRequest(uint64_t LaunchClamp_ID, krpc::Request& request)
 {
@@ -8219,6 +9877,8 @@ bool KRPCI::LaunchClamp_get_Part_createRequest(uint64_t LaunchClamp_ID, krpc::Re
 
 bool KRPCI::LaunchClamp_get_Part(uint64_t LaunchClamp_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::LaunchClamp_get_Part_createRequest(LaunchClamp_ID, request);
@@ -8230,10 +9890,16 @@ bool KRPCI::LaunchClamp_get_Part(uint64_t LaunchClamp_ID, uint64_t& return_value
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      LaunchClamp_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::LaunchClamp_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -8253,6 +9919,8 @@ bool KRPCI::Light_get_Part_createRequest(uint64_t Light_ID, krpc::Request& reque
 
 bool KRPCI::Light_get_Part(uint64_t Light_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Light_get_Part_createRequest(Light_ID, request);
@@ -8264,10 +9932,16 @@ bool KRPCI::Light_get_Part(uint64_t Light_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Light_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Light_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -8287,6 +9961,8 @@ bool KRPCI::Light_get_Active_createRequest(uint64_t Light_ID, krpc::Request& req
 
 bool KRPCI::Light_get_Active(uint64_t Light_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Light_get_Active_createRequest(Light_ID, request);
@@ -8299,6 +9975,11 @@ bool KRPCI::Light_get_Active(uint64_t Light_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Light_get_Active_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -8324,6 +10005,8 @@ bool KRPCI::Light_set_Active_createRequest(uint64_t Light_ID, bool value, krpc::
 
 bool KRPCI::Light_set_Active(uint64_t Light_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Light_set_Active_createRequest(Light_ID, value, request);
@@ -8338,6 +10021,7 @@ bool KRPCI::Light_set_Active(uint64_t Light_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Light_get_PowerUsage_createRequest(uint64_t Light_ID, krpc::Request& request)
 {
@@ -8355,6 +10039,8 @@ bool KRPCI::Light_get_PowerUsage_createRequest(uint64_t Light_ID, krpc::Request&
 
 bool KRPCI::Light_get_PowerUsage(uint64_t Light_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Light_get_PowerUsage_createRequest(Light_ID, request);
@@ -8366,9 +10052,15 @@ bool KRPCI::Light_get_PowerUsage(uint64_t Light_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Light_get_PowerUsage_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Light_get_PowerUsage_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -8390,6 +10082,8 @@ bool KRPCI::Module_HasField_createRequest(uint64_t Module_ID, std::string name, 
 
 bool KRPCI::Module_HasField(uint64_t Module_ID, std::string name, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Module_HasField_createRequest(Module_ID, name, request);
@@ -8402,6 +10096,11 @@ bool KRPCI::Module_HasField(uint64_t Module_ID, std::string name, bool& return_v
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Module_HasField_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -8423,6 +10122,8 @@ bool KRPCI::Module_GetField_createRequest(uint64_t Module_ID, std::string name, 
 
 bool KRPCI::Module_GetField(uint64_t Module_ID, std::string name, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Module_GetField_createRequest(Module_ID, name, request);
@@ -8435,6 +10136,11 @@ bool KRPCI::Module_GetField(uint64_t Module_ID, std::string name, std::string& r
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Module_GetField_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -8456,6 +10162,8 @@ bool KRPCI::Module_HasEvent_createRequest(uint64_t Module_ID, std::string name, 
 
 bool KRPCI::Module_HasEvent(uint64_t Module_ID, std::string name, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Module_HasEvent_createRequest(Module_ID, name, request);
@@ -8468,6 +10176,11 @@ bool KRPCI::Module_HasEvent(uint64_t Module_ID, std::string name, bool& return_v
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Module_HasEvent_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -8489,6 +10202,8 @@ bool KRPCI::Module_TriggerEvent_createRequest(uint64_t Module_ID, std::string na
 
 bool KRPCI::Module_TriggerEvent(uint64_t Module_ID, std::string name)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Module_TriggerEvent_createRequest(Module_ID, name, request);
@@ -8503,6 +10218,7 @@ bool KRPCI::Module_TriggerEvent(uint64_t Module_ID, std::string name)
     }
   return true;
 }
+
 
 bool KRPCI::Module_HasAction_createRequest(uint64_t Module_ID, std::string name, krpc::Request& request)
 {
@@ -8522,6 +10238,8 @@ bool KRPCI::Module_HasAction_createRequest(uint64_t Module_ID, std::string name,
 
 bool KRPCI::Module_HasAction(uint64_t Module_ID, std::string name, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Module_HasAction_createRequest(Module_ID, name, request);
@@ -8534,6 +10252,11 @@ bool KRPCI::Module_HasAction(uint64_t Module_ID, std::string name, bool& return_
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Module_HasAction_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -8561,6 +10284,8 @@ bool KRPCI::Module_SetAction_createRequest(uint64_t Module_ID, std::string name,
 
 bool KRPCI::Module_SetAction(uint64_t Module_ID, std::string name, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Module_SetAction_createRequest(Module_ID, name, value, request);
@@ -8575,6 +10300,7 @@ bool KRPCI::Module_SetAction(uint64_t Module_ID, std::string name, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Module_get_Name_createRequest(uint64_t Module_ID, krpc::Request& request)
 {
@@ -8592,6 +10318,8 @@ bool KRPCI::Module_get_Name_createRequest(uint64_t Module_ID, krpc::Request& req
 
 bool KRPCI::Module_get_Name(uint64_t Module_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Module_get_Name_createRequest(Module_ID, request);
@@ -8604,6 +10332,11 @@ bool KRPCI::Module_get_Name(uint64_t Module_ID, std::string& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Module_get_Name_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -8623,6 +10356,8 @@ bool KRPCI::Module_get_Part_createRequest(uint64_t Module_ID, krpc::Request& req
 
 bool KRPCI::Module_get_Part(uint64_t Module_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Module_get_Part_createRequest(Module_ID, request);
@@ -8634,10 +10369,16 @@ bool KRPCI::Module_get_Part(uint64_t Module_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Module_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Module_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -8657,6 +10398,8 @@ bool KRPCI::Module_get_Fields_createRequest(uint64_t Module_ID, krpc::Request& r
 
 bool KRPCI::Module_get_Fields(uint64_t Module_ID, krpc::Dictionary& return_dict)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Module_get_Fields_createRequest(Module_ID, request);
@@ -8669,6 +10412,11 @@ bool KRPCI::Module_get_Fields(uint64_t Module_ID, krpc::Dictionary& return_dict)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Module_get_Fields_parseResponse(krpc::Response response, krpc::Dictionary& return_dict)
+{
   return true;
 }
 
@@ -8688,6 +10436,8 @@ bool KRPCI::Module_get_Events_createRequest(uint64_t Module_ID, krpc::Request& r
 
 bool KRPCI::Module_get_Events(uint64_t Module_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Module_get_Events_createRequest(Module_ID, request);
@@ -8699,16 +10449,22 @@ bool KRPCI::Module_get_Events(uint64_t Module_ID, std::vector<uint64_t>& return_
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Module_get_Events_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Module_get_Events_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -8729,6 +10485,8 @@ bool KRPCI::Module_get_Actions_createRequest(uint64_t Module_ID, krpc::Request& 
 
 bool KRPCI::Module_get_Actions(uint64_t Module_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Module_get_Actions_createRequest(Module_ID, request);
@@ -8740,16 +10498,22 @@ bool KRPCI::Module_get_Actions(uint64_t Module_ID, std::vector<uint64_t>& return
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Module_get_Actions_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Module_get_Actions_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -8770,6 +10534,8 @@ bool KRPCI::Parachute_Deploy_createRequest(uint64_t Parachute_ID, krpc::Request&
 
 bool KRPCI::Parachute_Deploy(uint64_t Parachute_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parachute_Deploy_createRequest(Parachute_ID, request);
@@ -8784,6 +10550,7 @@ bool KRPCI::Parachute_Deploy(uint64_t Parachute_ID)
     }
   return true;
 }
+
 
 bool KRPCI::Parachute_get_Part_createRequest(uint64_t Parachute_ID, krpc::Request& request)
 {
@@ -8801,6 +10568,8 @@ bool KRPCI::Parachute_get_Part_createRequest(uint64_t Parachute_ID, krpc::Reques
 
 bool KRPCI::Parachute_get_Part(uint64_t Parachute_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parachute_get_Part_createRequest(Parachute_ID, request);
@@ -8812,10 +10581,16 @@ bool KRPCI::Parachute_get_Part(uint64_t Parachute_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Parachute_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Parachute_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -8835,6 +10610,8 @@ bool KRPCI::Parachute_get_Deployed_createRequest(uint64_t Parachute_ID, krpc::Re
 
 bool KRPCI::Parachute_get_Deployed(uint64_t Parachute_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parachute_get_Deployed_createRequest(Parachute_ID, request);
@@ -8847,6 +10624,11 @@ bool KRPCI::Parachute_get_Deployed(uint64_t Parachute_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Parachute_get_Deployed_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -8866,6 +10648,8 @@ bool KRPCI::Parachute_get_State_createRequest(uint64_t Parachute_ID, krpc::Reque
 
 bool KRPCI::Parachute_get_State(uint64_t Parachute_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parachute_get_State_createRequest(Parachute_ID, request);
@@ -8878,6 +10662,11 @@ bool KRPCI::Parachute_get_State(uint64_t Parachute_ID, int32_t& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Parachute_get_State_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -8897,6 +10686,8 @@ bool KRPCI::Parachute_get_DeployAltitude_createRequest(uint64_t Parachute_ID, kr
 
 bool KRPCI::Parachute_get_DeployAltitude(uint64_t Parachute_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parachute_get_DeployAltitude_createRequest(Parachute_ID, request);
@@ -8908,9 +10699,15 @@ bool KRPCI::Parachute_get_DeployAltitude(uint64_t Parachute_ID, float& return_va
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Parachute_get_DeployAltitude_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Parachute_get_DeployAltitude_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -8934,6 +10731,8 @@ bool KRPCI::Parachute_set_DeployAltitude_createRequest(uint64_t Parachute_ID, fl
 
 bool KRPCI::Parachute_set_DeployAltitude(uint64_t Parachute_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parachute_set_DeployAltitude_createRequest(Parachute_ID, value, request);
@@ -8948,6 +10747,7 @@ bool KRPCI::Parachute_set_DeployAltitude(uint64_t Parachute_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Parachute_get_DeployMinPressure_createRequest(uint64_t Parachute_ID, krpc::Request& request)
 {
@@ -8965,6 +10765,8 @@ bool KRPCI::Parachute_get_DeployMinPressure_createRequest(uint64_t Parachute_ID,
 
 bool KRPCI::Parachute_get_DeployMinPressure(uint64_t Parachute_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parachute_get_DeployMinPressure_createRequest(Parachute_ID, request);
@@ -8976,9 +10778,15 @@ bool KRPCI::Parachute_get_DeployMinPressure(uint64_t Parachute_ID, float& return
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Parachute_get_DeployMinPressure_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Parachute_get_DeployMinPressure_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -9002,6 +10810,8 @@ bool KRPCI::Parachute_set_DeployMinPressure_createRequest(uint64_t Parachute_ID,
 
 bool KRPCI::Parachute_set_DeployMinPressure(uint64_t Parachute_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parachute_set_DeployMinPressure_createRequest(Parachute_ID, value, request);
@@ -9016,6 +10826,7 @@ bool KRPCI::Parachute_set_DeployMinPressure(uint64_t Parachute_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Part_Position_createRequest(uint64_t Part_ID, uint64_t referenceFrame, krpc::Request& request)
 {
@@ -9039,6 +10850,8 @@ bool KRPCI::Part_Position_createRequest(uint64_t Part_ID, uint64_t referenceFram
 
 bool KRPCI::Part_Position(uint64_t Part_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_Position_createRequest(Part_ID, referenceFrame, request);
@@ -9050,10 +10863,16 @@ bool KRPCI::Part_Position(uint64_t Part_ID, uint64_t referenceFrame, double& x, 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Part_Position_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Part_Position_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -9079,6 +10898,8 @@ bool KRPCI::Part_Direction_createRequest(uint64_t Part_ID, uint64_t referenceFra
 
 bool KRPCI::Part_Direction(uint64_t Part_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_Direction_createRequest(Part_ID, referenceFrame, request);
@@ -9090,10 +10911,16 @@ bool KRPCI::Part_Direction(uint64_t Part_ID, uint64_t referenceFrame, double& x,
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Part_Direction_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Part_Direction_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -9119,6 +10946,8 @@ bool KRPCI::Part_Velocity_createRequest(uint64_t Part_ID, uint64_t referenceFram
 
 bool KRPCI::Part_Velocity(uint64_t Part_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_Velocity_createRequest(Part_ID, referenceFrame, request);
@@ -9130,10 +10959,16 @@ bool KRPCI::Part_Velocity(uint64_t Part_ID, uint64_t referenceFrame, double& x, 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Part_Velocity_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Part_Velocity_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -9159,6 +10994,8 @@ bool KRPCI::Part_Rotation_createRequest(uint64_t Part_ID, uint64_t referenceFram
 
 bool KRPCI::Part_Rotation(uint64_t Part_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_Rotation_createRequest(Part_ID, referenceFrame, request);
@@ -9170,10 +11007,16 @@ bool KRPCI::Part_Rotation(uint64_t Part_ID, uint64_t referenceFrame, double& x, 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Part_Rotation_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Part_Rotation_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -9193,6 +11036,8 @@ bool KRPCI::Part_get_Name_createRequest(uint64_t Part_ID, krpc::Request& request
 
 bool KRPCI::Part_get_Name(uint64_t Part_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Name_createRequest(Part_ID, request);
@@ -9205,6 +11050,11 @@ bool KRPCI::Part_get_Name(uint64_t Part_ID, std::string& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Name_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -9224,6 +11074,8 @@ bool KRPCI::Part_get_Title_createRequest(uint64_t Part_ID, krpc::Request& reques
 
 bool KRPCI::Part_get_Title(uint64_t Part_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Title_createRequest(Part_ID, request);
@@ -9236,6 +11088,11 @@ bool KRPCI::Part_get_Title(uint64_t Part_ID, std::string& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Title_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -9255,6 +11112,8 @@ bool KRPCI::Part_get_Cost_createRequest(uint64_t Part_ID, krpc::Request& request
 
 bool KRPCI::Part_get_Cost(uint64_t Part_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Cost_createRequest(Part_ID, request);
@@ -9266,9 +11125,15 @@ bool KRPCI::Part_get_Cost(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Part_get_Cost_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Cost_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -9288,6 +11153,8 @@ bool KRPCI::Part_get_Vessel_createRequest(uint64_t Part_ID, krpc::Request& reque
 
 bool KRPCI::Part_get_Vessel(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Vessel_createRequest(Part_ID, request);
@@ -9299,10 +11166,16 @@ bool KRPCI::Part_get_Vessel(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_Vessel_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Vessel_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -9322,6 +11195,8 @@ bool KRPCI::Part_get_Parent_createRequest(uint64_t Part_ID, krpc::Request& reque
 
 bool KRPCI::Part_get_Parent(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Parent_createRequest(Part_ID, request);
@@ -9333,10 +11208,16 @@ bool KRPCI::Part_get_Parent(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_Parent_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Parent_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -9356,6 +11237,8 @@ bool KRPCI::Part_get_Children_createRequest(uint64_t Part_ID, krpc::Request& req
 
 bool KRPCI::Part_get_Children(uint64_t Part_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Children_createRequest(Part_ID, request);
@@ -9367,16 +11250,22 @@ bool KRPCI::Part_get_Children(uint64_t Part_ID, std::vector<uint64_t>& return_ve
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Part_get_Children_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Part_get_Children_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -9397,6 +11286,8 @@ bool KRPCI::Part_get_AxiallyAttached_createRequest(uint64_t Part_ID, krpc::Reque
 
 bool KRPCI::Part_get_AxiallyAttached(uint64_t Part_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_AxiallyAttached_createRequest(Part_ID, request);
@@ -9409,6 +11300,11 @@ bool KRPCI::Part_get_AxiallyAttached(uint64_t Part_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Part_get_AxiallyAttached_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -9428,6 +11324,8 @@ bool KRPCI::Part_get_RadiallyAttached_createRequest(uint64_t Part_ID, krpc::Requ
 
 bool KRPCI::Part_get_RadiallyAttached(uint64_t Part_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_RadiallyAttached_createRequest(Part_ID, request);
@@ -9440,6 +11338,11 @@ bool KRPCI::Part_get_RadiallyAttached(uint64_t Part_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Part_get_RadiallyAttached_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -9459,6 +11362,8 @@ bool KRPCI::Part_get_Stage_createRequest(uint64_t Part_ID, krpc::Request& reques
 
 bool KRPCI::Part_get_Stage(uint64_t Part_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Stage_createRequest(Part_ID, request);
@@ -9471,6 +11376,11 @@ bool KRPCI::Part_get_Stage(uint64_t Part_ID, int32_t& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Stage_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -9490,6 +11400,8 @@ bool KRPCI::Part_get_DecoupleStage_createRequest(uint64_t Part_ID, krpc::Request
 
 bool KRPCI::Part_get_DecoupleStage(uint64_t Part_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_DecoupleStage_createRequest(Part_ID, request);
@@ -9502,6 +11414,11 @@ bool KRPCI::Part_get_DecoupleStage(uint64_t Part_ID, int32_t& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Part_get_DecoupleStage_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -9521,6 +11438,8 @@ bool KRPCI::Part_get_Massless_createRequest(uint64_t Part_ID, krpc::Request& req
 
 bool KRPCI::Part_get_Massless(uint64_t Part_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Massless_createRequest(Part_ID, request);
@@ -9533,6 +11452,11 @@ bool KRPCI::Part_get_Massless(uint64_t Part_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Massless_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -9552,6 +11476,8 @@ bool KRPCI::Part_get_Mass_createRequest(uint64_t Part_ID, krpc::Request& request
 
 bool KRPCI::Part_get_Mass(uint64_t Part_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Mass_createRequest(Part_ID, request);
@@ -9563,9 +11489,15 @@ bool KRPCI::Part_get_Mass(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Part_get_Mass_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Mass_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -9585,6 +11517,8 @@ bool KRPCI::Part_get_DryMass_createRequest(uint64_t Part_ID, krpc::Request& requ
 
 bool KRPCI::Part_get_DryMass(uint64_t Part_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_DryMass_createRequest(Part_ID, request);
@@ -9596,9 +11530,15 @@ bool KRPCI::Part_get_DryMass(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Part_get_DryMass_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_DryMass_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -9618,6 +11558,8 @@ bool KRPCI::Part_get_ImpactTolerance_createRequest(uint64_t Part_ID, krpc::Reque
 
 bool KRPCI::Part_get_ImpactTolerance(uint64_t Part_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_ImpactTolerance_createRequest(Part_ID, request);
@@ -9629,9 +11571,15 @@ bool KRPCI::Part_get_ImpactTolerance(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Part_get_ImpactTolerance_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_ImpactTolerance_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -9651,6 +11599,8 @@ bool KRPCI::Part_get_Temperature_createRequest(uint64_t Part_ID, krpc::Request& 
 
 bool KRPCI::Part_get_Temperature(uint64_t Part_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Temperature_createRequest(Part_ID, request);
@@ -9662,9 +11612,15 @@ bool KRPCI::Part_get_Temperature(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Part_get_Temperature_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Temperature_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -9684,6 +11640,8 @@ bool KRPCI::Part_get_MaxTemperature_createRequest(uint64_t Part_ID, krpc::Reques
 
 bool KRPCI::Part_get_MaxTemperature(uint64_t Part_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_MaxTemperature_createRequest(Part_ID, request);
@@ -9695,9 +11653,15 @@ bool KRPCI::Part_get_MaxTemperature(uint64_t Part_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Part_get_MaxTemperature_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_MaxTemperature_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -9717,6 +11681,8 @@ bool KRPCI::Part_get_Resources_createRequest(uint64_t Part_ID, krpc::Request& re
 
 bool KRPCI::Part_get_Resources(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Resources_createRequest(Part_ID, request);
@@ -9728,10 +11694,16 @@ bool KRPCI::Part_get_Resources(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_Resources_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Resources_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -9751,6 +11723,8 @@ bool KRPCI::Part_get_Crossfeed_createRequest(uint64_t Part_ID, krpc::Request& re
 
 bool KRPCI::Part_get_Crossfeed(uint64_t Part_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Crossfeed_createRequest(Part_ID, request);
@@ -9763,6 +11737,11 @@ bool KRPCI::Part_get_Crossfeed(uint64_t Part_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Crossfeed_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -9782,6 +11761,8 @@ bool KRPCI::Part_get_FuelLinesFrom_createRequest(uint64_t Part_ID, krpc::Request
 
 bool KRPCI::Part_get_FuelLinesFrom(uint64_t Part_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_FuelLinesFrom_createRequest(Part_ID, request);
@@ -9793,16 +11774,22 @@ bool KRPCI::Part_get_FuelLinesFrom(uint64_t Part_ID, std::vector<uint64_t>& retu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Part_get_FuelLinesFrom_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Part_get_FuelLinesFrom_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -9823,6 +11810,8 @@ bool KRPCI::Part_get_FuelLinesTo_createRequest(uint64_t Part_ID, krpc::Request& 
 
 bool KRPCI::Part_get_FuelLinesTo(uint64_t Part_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_FuelLinesTo_createRequest(Part_ID, request);
@@ -9834,16 +11823,22 @@ bool KRPCI::Part_get_FuelLinesTo(uint64_t Part_ID, std::vector<uint64_t>& return
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Part_get_FuelLinesTo_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Part_get_FuelLinesTo_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -9864,6 +11859,8 @@ bool KRPCI::Part_get_Modules_createRequest(uint64_t Part_ID, krpc::Request& requ
 
 bool KRPCI::Part_get_Modules(uint64_t Part_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Modules_createRequest(Part_ID, request);
@@ -9875,16 +11872,22 @@ bool KRPCI::Part_get_Modules(uint64_t Part_ID, std::vector<uint64_t>& return_vec
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Part_get_Modules_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Part_get_Modules_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -9905,6 +11908,8 @@ bool KRPCI::Part_get_Decoupler_createRequest(uint64_t Part_ID, krpc::Request& re
 
 bool KRPCI::Part_get_Decoupler(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Decoupler_createRequest(Part_ID, request);
@@ -9916,10 +11921,16 @@ bool KRPCI::Part_get_Decoupler(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_Decoupler_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Decoupler_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -9939,6 +11950,8 @@ bool KRPCI::Part_get_DockingPort_createRequest(uint64_t Part_ID, krpc::Request& 
 
 bool KRPCI::Part_get_DockingPort(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_DockingPort_createRequest(Part_ID, request);
@@ -9950,10 +11963,16 @@ bool KRPCI::Part_get_DockingPort(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_DockingPort_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_DockingPort_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -9973,6 +11992,8 @@ bool KRPCI::Part_get_Engine_createRequest(uint64_t Part_ID, krpc::Request& reque
 
 bool KRPCI::Part_get_Engine(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Engine_createRequest(Part_ID, request);
@@ -9984,10 +12005,16 @@ bool KRPCI::Part_get_Engine(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_Engine_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Engine_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10007,6 +12034,8 @@ bool KRPCI::Part_get_LandingGear_createRequest(uint64_t Part_ID, krpc::Request& 
 
 bool KRPCI::Part_get_LandingGear(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_LandingGear_createRequest(Part_ID, request);
@@ -10018,10 +12047,16 @@ bool KRPCI::Part_get_LandingGear(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_LandingGear_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_LandingGear_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10041,6 +12076,8 @@ bool KRPCI::Part_get_LandingLeg_createRequest(uint64_t Part_ID, krpc::Request& r
 
 bool KRPCI::Part_get_LandingLeg(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_LandingLeg_createRequest(Part_ID, request);
@@ -10052,10 +12089,16 @@ bool KRPCI::Part_get_LandingLeg(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_LandingLeg_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_LandingLeg_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10075,6 +12118,8 @@ bool KRPCI::Part_get_LaunchClamp_createRequest(uint64_t Part_ID, krpc::Request& 
 
 bool KRPCI::Part_get_LaunchClamp(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_LaunchClamp_createRequest(Part_ID, request);
@@ -10086,10 +12131,16 @@ bool KRPCI::Part_get_LaunchClamp(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_LaunchClamp_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_LaunchClamp_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10109,6 +12160,8 @@ bool KRPCI::Part_get_Light_createRequest(uint64_t Part_ID, krpc::Request& reques
 
 bool KRPCI::Part_get_Light(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Light_createRequest(Part_ID, request);
@@ -10120,10 +12173,16 @@ bool KRPCI::Part_get_Light(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_Light_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Light_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10143,6 +12202,8 @@ bool KRPCI::Part_get_Parachute_createRequest(uint64_t Part_ID, krpc::Request& re
 
 bool KRPCI::Part_get_Parachute(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Parachute_createRequest(Part_ID, request);
@@ -10154,10 +12215,16 @@ bool KRPCI::Part_get_Parachute(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_Parachute_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Parachute_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10177,6 +12244,8 @@ bool KRPCI::Part_get_ReactionWheel_createRequest(uint64_t Part_ID, krpc::Request
 
 bool KRPCI::Part_get_ReactionWheel(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_ReactionWheel_createRequest(Part_ID, request);
@@ -10188,10 +12257,16 @@ bool KRPCI::Part_get_ReactionWheel(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_ReactionWheel_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_ReactionWheel_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10211,6 +12286,8 @@ bool KRPCI::Part_get_Sensor_createRequest(uint64_t Part_ID, krpc::Request& reque
 
 bool KRPCI::Part_get_Sensor(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_Sensor_createRequest(Part_ID, request);
@@ -10222,10 +12299,16 @@ bool KRPCI::Part_get_Sensor(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_Sensor_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_Sensor_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10245,6 +12328,8 @@ bool KRPCI::Part_get_SolarPanel_createRequest(uint64_t Part_ID, krpc::Request& r
 
 bool KRPCI::Part_get_SolarPanel(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_SolarPanel_createRequest(Part_ID, request);
@@ -10256,10 +12341,16 @@ bool KRPCI::Part_get_SolarPanel(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_SolarPanel_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_SolarPanel_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10279,6 +12370,8 @@ bool KRPCI::Part_get_ReferenceFrame_createRequest(uint64_t Part_ID, krpc::Reques
 
 bool KRPCI::Part_get_ReferenceFrame(uint64_t Part_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Part_get_ReferenceFrame_createRequest(Part_ID, request);
@@ -10290,10 +12383,16 @@ bool KRPCI::Part_get_ReferenceFrame(uint64_t Part_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Part_get_ReferenceFrame_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Part_get_ReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10315,6 +12414,8 @@ bool KRPCI::Parts_WithName_createRequest(uint64_t Parts_ID, std::string name, kr
 
 bool KRPCI::Parts_WithName(uint64_t Parts_ID, std::string name, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_WithName_createRequest(Parts_ID, name, request);
@@ -10326,16 +12427,22 @@ bool KRPCI::Parts_WithName(uint64_t Parts_ID, std::string name, std::vector<uint
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_WithName_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_WithName_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10358,6 +12465,8 @@ bool KRPCI::Parts_WithTitle_createRequest(uint64_t Parts_ID, std::string title, 
 
 bool KRPCI::Parts_WithTitle(uint64_t Parts_ID, std::string title, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_WithTitle_createRequest(Parts_ID, title, request);
@@ -10369,16 +12478,22 @@ bool KRPCI::Parts_WithTitle(uint64_t Parts_ID, std::string title, std::vector<ui
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_WithTitle_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_WithTitle_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10401,6 +12516,8 @@ bool KRPCI::Parts_WithModule_createRequest(uint64_t Parts_ID, std::string module
 
 bool KRPCI::Parts_WithModule(uint64_t Parts_ID, std::string moduleName, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_WithModule_createRequest(Parts_ID, moduleName, request);
@@ -10412,16 +12529,22 @@ bool KRPCI::Parts_WithModule(uint64_t Parts_ID, std::string moduleName, std::vec
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_WithModule_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_WithModule_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10444,6 +12567,8 @@ bool KRPCI::Parts_InStage_createRequest(uint64_t Parts_ID, int32_t stage, krpc::
 
 bool KRPCI::Parts_InStage(uint64_t Parts_ID, int32_t stage, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_InStage_createRequest(Parts_ID, stage, request);
@@ -10455,16 +12580,22 @@ bool KRPCI::Parts_InStage(uint64_t Parts_ID, int32_t stage, std::vector<uint64_t
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_InStage_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_InStage_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10487,6 +12618,8 @@ bool KRPCI::Parts_InDecoupleStage_createRequest(uint64_t Parts_ID, int32_t stage
 
 bool KRPCI::Parts_InDecoupleStage(uint64_t Parts_ID, int32_t stage, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_InDecoupleStage_createRequest(Parts_ID, stage, request);
@@ -10498,16 +12631,22 @@ bool KRPCI::Parts_InDecoupleStage(uint64_t Parts_ID, int32_t stage, std::vector<
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_InDecoupleStage_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_InDecoupleStage_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10530,6 +12669,8 @@ bool KRPCI::Parts_ModulesWithName_createRequest(uint64_t Parts_ID, std::string m
 
 bool KRPCI::Parts_ModulesWithName(uint64_t Parts_ID, std::string moduleName, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_ModulesWithName_createRequest(Parts_ID, moduleName, request);
@@ -10541,16 +12682,22 @@ bool KRPCI::Parts_ModulesWithName(uint64_t Parts_ID, std::string moduleName, std
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_ModulesWithName_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_ModulesWithName_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10573,6 +12720,8 @@ bool KRPCI::Parts_DockingPortWithName_createRequest(uint64_t Parts_ID, std::stri
 
 bool KRPCI::Parts_DockingPortWithName(uint64_t Parts_ID, std::string name, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_DockingPortWithName_createRequest(Parts_ID, name, request);
@@ -10584,10 +12733,16 @@ bool KRPCI::Parts_DockingPortWithName(uint64_t Parts_ID, std::string name, uint6
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Parts_DockingPortWithName_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Parts_DockingPortWithName_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10607,6 +12762,8 @@ bool KRPCI::Parts_get_All_createRequest(uint64_t Parts_ID, krpc::Request& reques
 
 bool KRPCI::Parts_get_All(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_All_createRequest(Parts_ID, request);
@@ -10618,16 +12775,22 @@ bool KRPCI::Parts_get_All(uint64_t Parts_ID, std::vector<uint64_t>& return_vecto
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_All_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_All_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10648,6 +12811,8 @@ bool KRPCI::Parts_get_Root_createRequest(uint64_t Parts_ID, krpc::Request& reque
 
 bool KRPCI::Parts_get_Root(uint64_t Parts_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_Root_createRequest(Parts_ID, request);
@@ -10659,10 +12824,16 @@ bool KRPCI::Parts_get_Root(uint64_t Parts_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Parts_get_Root_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Parts_get_Root_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10682,6 +12853,8 @@ bool KRPCI::Parts_get_Controlling_createRequest(uint64_t Parts_ID, krpc::Request
 
 bool KRPCI::Parts_get_Controlling(uint64_t Parts_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_Controlling_createRequest(Parts_ID, request);
@@ -10693,10 +12866,16 @@ bool KRPCI::Parts_get_Controlling(uint64_t Parts_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Parts_get_Controlling_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Parts_get_Controlling_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -10722,6 +12901,8 @@ bool KRPCI::Parts_set_Controlling_createRequest(uint64_t Parts_ID, uint64_t valu
 
 bool KRPCI::Parts_set_Controlling(uint64_t Parts_ID, uint64_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_set_Controlling_createRequest(Parts_ID, value, request);
@@ -10736,6 +12917,7 @@ bool KRPCI::Parts_set_Controlling(uint64_t Parts_ID, uint64_t value)
     }
   return true;
 }
+
 
 bool KRPCI::Parts_get_Decouplers_createRequest(uint64_t Parts_ID, krpc::Request& request)
 {
@@ -10753,6 +12935,8 @@ bool KRPCI::Parts_get_Decouplers_createRequest(uint64_t Parts_ID, krpc::Request&
 
 bool KRPCI::Parts_get_Decouplers(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_Decouplers_createRequest(Parts_ID, request);
@@ -10764,16 +12948,22 @@ bool KRPCI::Parts_get_Decouplers(uint64_t Parts_ID, std::vector<uint64_t>& retur
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_Decouplers_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_Decouplers_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10794,6 +12984,8 @@ bool KRPCI::Parts_get_DockingPorts_createRequest(uint64_t Parts_ID, krpc::Reques
 
 bool KRPCI::Parts_get_DockingPorts(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_DockingPorts_createRequest(Parts_ID, request);
@@ -10805,16 +12997,22 @@ bool KRPCI::Parts_get_DockingPorts(uint64_t Parts_ID, std::vector<uint64_t>& ret
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_DockingPorts_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_DockingPorts_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10835,6 +13033,8 @@ bool KRPCI::Parts_get_Engines_createRequest(uint64_t Parts_ID, krpc::Request& re
 
 bool KRPCI::Parts_get_Engines(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_Engines_createRequest(Parts_ID, request);
@@ -10846,16 +13046,22 @@ bool KRPCI::Parts_get_Engines(uint64_t Parts_ID, std::vector<uint64_t>& return_v
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_Engines_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_Engines_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10876,6 +13082,8 @@ bool KRPCI::Parts_get_LandingGear_createRequest(uint64_t Parts_ID, krpc::Request
 
 bool KRPCI::Parts_get_LandingGear(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_LandingGear_createRequest(Parts_ID, request);
@@ -10887,16 +13095,22 @@ bool KRPCI::Parts_get_LandingGear(uint64_t Parts_ID, std::vector<uint64_t>& retu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_LandingGear_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_LandingGear_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10917,6 +13131,8 @@ bool KRPCI::Parts_get_LandingLegs_createRequest(uint64_t Parts_ID, krpc::Request
 
 bool KRPCI::Parts_get_LandingLegs(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_LandingLegs_createRequest(Parts_ID, request);
@@ -10928,16 +13144,22 @@ bool KRPCI::Parts_get_LandingLegs(uint64_t Parts_ID, std::vector<uint64_t>& retu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_LandingLegs_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_LandingLegs_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10958,6 +13180,8 @@ bool KRPCI::Parts_get_LaunchClamps_createRequest(uint64_t Parts_ID, krpc::Reques
 
 bool KRPCI::Parts_get_LaunchClamps(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_LaunchClamps_createRequest(Parts_ID, request);
@@ -10969,16 +13193,22 @@ bool KRPCI::Parts_get_LaunchClamps(uint64_t Parts_ID, std::vector<uint64_t>& ret
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_LaunchClamps_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_LaunchClamps_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -10999,6 +13229,8 @@ bool KRPCI::Parts_get_Lights_createRequest(uint64_t Parts_ID, krpc::Request& req
 
 bool KRPCI::Parts_get_Lights(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_Lights_createRequest(Parts_ID, request);
@@ -11010,16 +13242,22 @@ bool KRPCI::Parts_get_Lights(uint64_t Parts_ID, std::vector<uint64_t>& return_ve
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_Lights_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_Lights_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -11040,6 +13278,8 @@ bool KRPCI::Parts_get_Parachutes_createRequest(uint64_t Parts_ID, krpc::Request&
 
 bool KRPCI::Parts_get_Parachutes(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_Parachutes_createRequest(Parts_ID, request);
@@ -11051,16 +13291,22 @@ bool KRPCI::Parts_get_Parachutes(uint64_t Parts_ID, std::vector<uint64_t>& retur
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_Parachutes_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_Parachutes_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -11081,6 +13327,8 @@ bool KRPCI::Parts_get_ReactionWheels_createRequest(uint64_t Parts_ID, krpc::Requ
 
 bool KRPCI::Parts_get_ReactionWheels(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_ReactionWheels_createRequest(Parts_ID, request);
@@ -11092,16 +13340,22 @@ bool KRPCI::Parts_get_ReactionWheels(uint64_t Parts_ID, std::vector<uint64_t>& r
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_ReactionWheels_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_ReactionWheels_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -11122,6 +13376,8 @@ bool KRPCI::Parts_get_Sensors_createRequest(uint64_t Parts_ID, krpc::Request& re
 
 bool KRPCI::Parts_get_Sensors(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_Sensors_createRequest(Parts_ID, request);
@@ -11133,16 +13389,22 @@ bool KRPCI::Parts_get_Sensors(uint64_t Parts_ID, std::vector<uint64_t>& return_v
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_Sensors_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_Sensors_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -11163,6 +13425,8 @@ bool KRPCI::Parts_get_SolarPanels_createRequest(uint64_t Parts_ID, krpc::Request
 
 bool KRPCI::Parts_get_SolarPanels(uint64_t Parts_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Parts_get_SolarPanels_createRequest(Parts_ID, request);
@@ -11174,16 +13438,22 @@ bool KRPCI::Parts_get_SolarPanels(uint64_t Parts_ID, std::vector<uint64_t>& retu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Parts_get_SolarPanels_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Parts_get_SolarPanels_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -11204,6 +13474,8 @@ bool KRPCI::ReactionWheel_get_Part_createRequest(uint64_t ReactionWheel_ID, krpc
 
 bool KRPCI::ReactionWheel_get_Part(uint64_t ReactionWheel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ReactionWheel_get_Part_createRequest(ReactionWheel_ID, request);
@@ -11215,10 +13487,16 @@ bool KRPCI::ReactionWheel_get_Part(uint64_t ReactionWheel_ID, uint64_t& return_v
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      ReactionWheel_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::ReactionWheel_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -11238,6 +13516,8 @@ bool KRPCI::ReactionWheel_get_Active_createRequest(uint64_t ReactionWheel_ID, kr
 
 bool KRPCI::ReactionWheel_get_Active(uint64_t ReactionWheel_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ReactionWheel_get_Active_createRequest(ReactionWheel_ID, request);
@@ -11250,6 +13530,11 @@ bool KRPCI::ReactionWheel_get_Active(uint64_t ReactionWheel_ID, bool& return_val
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::ReactionWheel_get_Active_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -11275,6 +13560,8 @@ bool KRPCI::ReactionWheel_set_Active_createRequest(uint64_t ReactionWheel_ID, bo
 
 bool KRPCI::ReactionWheel_set_Active(uint64_t ReactionWheel_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ReactionWheel_set_Active_createRequest(ReactionWheel_ID, value, request);
@@ -11289,6 +13576,7 @@ bool KRPCI::ReactionWheel_set_Active(uint64_t ReactionWheel_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::ReactionWheel_get_Broken_createRequest(uint64_t ReactionWheel_ID, krpc::Request& request)
 {
@@ -11306,6 +13594,8 @@ bool KRPCI::ReactionWheel_get_Broken_createRequest(uint64_t ReactionWheel_ID, kr
 
 bool KRPCI::ReactionWheel_get_Broken(uint64_t ReactionWheel_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ReactionWheel_get_Broken_createRequest(ReactionWheel_ID, request);
@@ -11318,6 +13608,11 @@ bool KRPCI::ReactionWheel_get_Broken(uint64_t ReactionWheel_ID, bool& return_val
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::ReactionWheel_get_Broken_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -11337,6 +13632,8 @@ bool KRPCI::ReactionWheel_get_PitchTorque_createRequest(uint64_t ReactionWheel_I
 
 bool KRPCI::ReactionWheel_get_PitchTorque(uint64_t ReactionWheel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ReactionWheel_get_PitchTorque_createRequest(ReactionWheel_ID, request);
@@ -11348,9 +13645,15 @@ bool KRPCI::ReactionWheel_get_PitchTorque(uint64_t ReactionWheel_ID, float& retu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      ReactionWheel_get_PitchTorque_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::ReactionWheel_get_PitchTorque_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -11370,6 +13673,8 @@ bool KRPCI::ReactionWheel_get_YawTorque_createRequest(uint64_t ReactionWheel_ID,
 
 bool KRPCI::ReactionWheel_get_YawTorque(uint64_t ReactionWheel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ReactionWheel_get_YawTorque_createRequest(ReactionWheel_ID, request);
@@ -11381,9 +13686,15 @@ bool KRPCI::ReactionWheel_get_YawTorque(uint64_t ReactionWheel_ID, float& return
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      ReactionWheel_get_YawTorque_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::ReactionWheel_get_YawTorque_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -11403,6 +13714,8 @@ bool KRPCI::ReactionWheel_get_RollTorque_createRequest(uint64_t ReactionWheel_ID
 
 bool KRPCI::ReactionWheel_get_RollTorque(uint64_t ReactionWheel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ReactionWheel_get_RollTorque_createRequest(ReactionWheel_ID, request);
@@ -11414,9 +13727,15 @@ bool KRPCI::ReactionWheel_get_RollTorque(uint64_t ReactionWheel_ID, float& retur
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      ReactionWheel_get_RollTorque_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::ReactionWheel_get_RollTorque_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -11436,6 +13755,8 @@ bool KRPCI::Sensor_get_Part_createRequest(uint64_t Sensor_ID, krpc::Request& req
 
 bool KRPCI::Sensor_get_Part(uint64_t Sensor_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Sensor_get_Part_createRequest(Sensor_ID, request);
@@ -11447,10 +13768,16 @@ bool KRPCI::Sensor_get_Part(uint64_t Sensor_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Sensor_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Sensor_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -11470,6 +13797,8 @@ bool KRPCI::Sensor_get_Active_createRequest(uint64_t Sensor_ID, krpc::Request& r
 
 bool KRPCI::Sensor_get_Active(uint64_t Sensor_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Sensor_get_Active_createRequest(Sensor_ID, request);
@@ -11482,6 +13811,11 @@ bool KRPCI::Sensor_get_Active(uint64_t Sensor_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Sensor_get_Active_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -11507,6 +13841,8 @@ bool KRPCI::Sensor_set_Active_createRequest(uint64_t Sensor_ID, bool value, krpc
 
 bool KRPCI::Sensor_set_Active(uint64_t Sensor_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Sensor_set_Active_createRequest(Sensor_ID, value, request);
@@ -11521,6 +13857,7 @@ bool KRPCI::Sensor_set_Active(uint64_t Sensor_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Sensor_get_Value_createRequest(uint64_t Sensor_ID, krpc::Request& request)
 {
@@ -11538,6 +13875,8 @@ bool KRPCI::Sensor_get_Value_createRequest(uint64_t Sensor_ID, krpc::Request& re
 
 bool KRPCI::Sensor_get_Value(uint64_t Sensor_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Sensor_get_Value_createRequest(Sensor_ID, request);
@@ -11550,6 +13889,11 @@ bool KRPCI::Sensor_get_Value(uint64_t Sensor_ID, std::string& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Sensor_get_Value_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -11569,6 +13913,8 @@ bool KRPCI::Sensor_get_PowerUsage_createRequest(uint64_t Sensor_ID, krpc::Reques
 
 bool KRPCI::Sensor_get_PowerUsage(uint64_t Sensor_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Sensor_get_PowerUsage_createRequest(Sensor_ID, request);
@@ -11580,9 +13926,15 @@ bool KRPCI::Sensor_get_PowerUsage(uint64_t Sensor_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Sensor_get_PowerUsage_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Sensor_get_PowerUsage_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -11602,6 +13954,8 @@ bool KRPCI::SolarPanel_get_Part_createRequest(uint64_t SolarPanel_ID, krpc::Requ
 
 bool KRPCI::SolarPanel_get_Part(uint64_t SolarPanel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::SolarPanel_get_Part_createRequest(SolarPanel_ID, request);
@@ -11613,10 +13967,16 @@ bool KRPCI::SolarPanel_get_Part(uint64_t SolarPanel_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      SolarPanel_get_Part_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::SolarPanel_get_Part_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -11636,6 +13996,8 @@ bool KRPCI::SolarPanel_get_Deployed_createRequest(uint64_t SolarPanel_ID, krpc::
 
 bool KRPCI::SolarPanel_get_Deployed(uint64_t SolarPanel_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::SolarPanel_get_Deployed_createRequest(SolarPanel_ID, request);
@@ -11648,6 +14010,11 @@ bool KRPCI::SolarPanel_get_Deployed(uint64_t SolarPanel_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::SolarPanel_get_Deployed_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -11673,6 +14040,8 @@ bool KRPCI::SolarPanel_set_Deployed_createRequest(uint64_t SolarPanel_ID, bool v
 
 bool KRPCI::SolarPanel_set_Deployed(uint64_t SolarPanel_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::SolarPanel_set_Deployed_createRequest(SolarPanel_ID, value, request);
@@ -11687,6 +14056,7 @@ bool KRPCI::SolarPanel_set_Deployed(uint64_t SolarPanel_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::SolarPanel_get_State_createRequest(uint64_t SolarPanel_ID, krpc::Request& request)
 {
@@ -11704,6 +14074,8 @@ bool KRPCI::SolarPanel_get_State_createRequest(uint64_t SolarPanel_ID, krpc::Req
 
 bool KRPCI::SolarPanel_get_State(uint64_t SolarPanel_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::SolarPanel_get_State_createRequest(SolarPanel_ID, request);
@@ -11716,6 +14088,11 @@ bool KRPCI::SolarPanel_get_State(uint64_t SolarPanel_ID, int32_t& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::SolarPanel_get_State_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -11735,6 +14112,8 @@ bool KRPCI::SolarPanel_get_EnergyFlow_createRequest(uint64_t SolarPanel_ID, krpc
 
 bool KRPCI::SolarPanel_get_EnergyFlow(uint64_t SolarPanel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::SolarPanel_get_EnergyFlow_createRequest(SolarPanel_ID, request);
@@ -11746,9 +14125,15 @@ bool KRPCI::SolarPanel_get_EnergyFlow(uint64_t SolarPanel_ID, float& return_valu
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      SolarPanel_get_EnergyFlow_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::SolarPanel_get_EnergyFlow_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -11768,6 +14153,8 @@ bool KRPCI::SolarPanel_get_SunExposure_createRequest(uint64_t SolarPanel_ID, krp
 
 bool KRPCI::SolarPanel_get_SunExposure(uint64_t SolarPanel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::SolarPanel_get_SunExposure_createRequest(SolarPanel_ID, request);
@@ -11779,9 +14166,15 @@ bool KRPCI::SolarPanel_get_SunExposure(uint64_t SolarPanel_ID, float& return_val
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      SolarPanel_get_SunExposure_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::SolarPanel_get_SunExposure_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -11803,6 +14196,8 @@ bool KRPCI::Resources_HasResource_createRequest(uint64_t Resources_ID, std::stri
 
 bool KRPCI::Resources_HasResource(uint64_t Resources_ID, std::string name, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Resources_HasResource_createRequest(Resources_ID, name, request);
@@ -11815,6 +14210,11 @@ bool KRPCI::Resources_HasResource(uint64_t Resources_ID, std::string name, bool&
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Resources_HasResource_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -11836,6 +14236,8 @@ bool KRPCI::Resources_Max_createRequest(uint64_t Resources_ID, std::string name,
 
 bool KRPCI::Resources_Max(uint64_t Resources_ID, std::string name, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Resources_Max_createRequest(Resources_ID, name, request);
@@ -11847,9 +14249,15 @@ bool KRPCI::Resources_Max(uint64_t Resources_ID, std::string name, float& return
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Resources_Max_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Resources_Max_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -11871,6 +14279,8 @@ bool KRPCI::Resources_Amount_createRequest(uint64_t Resources_ID, std::string na
 
 bool KRPCI::Resources_Amount(uint64_t Resources_ID, std::string name, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Resources_Amount_createRequest(Resources_ID, name, request);
@@ -11882,9 +14292,15 @@ bool KRPCI::Resources_Amount(uint64_t Resources_ID, std::string name, float& ret
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Resources_Amount_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Resources_Amount_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -11900,6 +14316,8 @@ bool KRPCI::Resources_Density_createRequest(std::string name, krpc::Request& req
 
 bool KRPCI::Resources_Density(std::string name, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Resources_Density_createRequest(name, request);
@@ -11911,9 +14329,15 @@ bool KRPCI::Resources_Density(std::string name, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Resources_Density_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Resources_Density_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -11933,6 +14357,8 @@ bool KRPCI::Resources_get_Names_createRequest(uint64_t Resources_ID, krpc::Reque
 
 bool KRPCI::Resources_get_Names(uint64_t Resources_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Resources_get_Names_createRequest(Resources_ID, request);
@@ -11944,16 +14370,22 @@ bool KRPCI::Resources_get_Names(uint64_t Resources_ID, std::vector<uint64_t>& re
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      Resources_get_Names_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::Resources_get_Names_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -11980,6 +14412,8 @@ bool KRPCI::Vessel_Flight_createRequest(uint64_t Vessel_ID, uint64_t referenceFr
 
 bool KRPCI::Vessel_Flight(uint64_t Vessel_ID, uint64_t referenceFrame, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_Flight_createRequest(Vessel_ID, referenceFrame, request);
@@ -11991,10 +14425,16 @@ bool KRPCI::Vessel_Flight(uint64_t Vessel_ID, uint64_t referenceFrame, uint64_t&
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_Flight_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_Flight_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -12022,6 +14462,8 @@ bool KRPCI::Vessel_ResourcesInDecoupleStage_createRequest(uint64_t Vessel_ID, in
 
 bool KRPCI::Vessel_ResourcesInDecoupleStage(uint64_t Vessel_ID, int32_t stage, bool cumulative, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_ResourcesInDecoupleStage_createRequest(Vessel_ID, stage, cumulative, request);
@@ -12033,10 +14475,16 @@ bool KRPCI::Vessel_ResourcesInDecoupleStage(uint64_t Vessel_ID, int32_t stage, b
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_ResourcesInDecoupleStage_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_ResourcesInDecoupleStage_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -12062,6 +14510,8 @@ bool KRPCI::Vessel_Position_createRequest(uint64_t Vessel_ID, uint64_t reference
 
 bool KRPCI::Vessel_Position(uint64_t Vessel_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_Position_createRequest(Vessel_ID, referenceFrame, request);
@@ -12073,10 +14523,16 @@ bool KRPCI::Vessel_Position(uint64_t Vessel_ID, uint64_t referenceFrame, double&
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Vessel_Position_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_Position_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -12102,6 +14558,8 @@ bool KRPCI::Vessel_Velocity_createRequest(uint64_t Vessel_ID, uint64_t reference
 
 bool KRPCI::Vessel_Velocity(uint64_t Vessel_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_Velocity_createRequest(Vessel_ID, referenceFrame, request);
@@ -12113,10 +14571,16 @@ bool KRPCI::Vessel_Velocity(uint64_t Vessel_ID, uint64_t referenceFrame, double&
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Vessel_Velocity_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_Velocity_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -12142,6 +14606,8 @@ bool KRPCI::Vessel_Rotation_createRequest(uint64_t Vessel_ID, uint64_t reference
 
 bool KRPCI::Vessel_Rotation(uint64_t Vessel_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_Rotation_createRequest(Vessel_ID, referenceFrame, request);
@@ -12153,10 +14619,16 @@ bool KRPCI::Vessel_Rotation(uint64_t Vessel_ID, uint64_t referenceFrame, double&
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Vessel_Rotation_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_Rotation_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -12182,6 +14654,8 @@ bool KRPCI::Vessel_Direction_createRequest(uint64_t Vessel_ID, uint64_t referenc
 
 bool KRPCI::Vessel_Direction(uint64_t Vessel_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_Direction_createRequest(Vessel_ID, referenceFrame, request);
@@ -12193,10 +14667,16 @@ bool KRPCI::Vessel_Direction(uint64_t Vessel_ID, uint64_t referenceFrame, double
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Vessel_Direction_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_Direction_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -12222,6 +14702,8 @@ bool KRPCI::Vessel_AngularVelocity_createRequest(uint64_t Vessel_ID, uint64_t re
 
 bool KRPCI::Vessel_AngularVelocity(uint64_t Vessel_ID, uint64_t referenceFrame, double& x, double& y, double& z)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_AngularVelocity_createRequest(Vessel_ID, referenceFrame, request);
@@ -12233,10 +14715,16 @@ bool KRPCI::Vessel_AngularVelocity(uint64_t Vessel_ID, uint64_t referenceFrame, 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::Tuple tuple;
-      tuple.ParseFromString(response.return_value());
-      KRPCI::DecodeTuple(tuple, x, y, z);
+      Vessel_AngularVelocity_parseResponse(response, x, y, z);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_AngularVelocity_parseResponse(krpc::Response response, double& x, double& y, double& z)
+{
+  krpc::Tuple tuple;
+  tuple.ParseFromString(response.return_value());
+  KRPCI::DecodeTuple(tuple, x, y, z);
   return true;
 }
 
@@ -12256,6 +14744,8 @@ bool KRPCI::Vessel_get_Name_createRequest(uint64_t Vessel_ID, krpc::Request& req
 
 bool KRPCI::Vessel_get_Name(uint64_t Vessel_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_Name_createRequest(Vessel_ID, request);
@@ -12268,6 +14758,11 @@ bool KRPCI::Vessel_get_Name(uint64_t Vessel_ID, std::string& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_Name_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -12289,6 +14784,8 @@ bool KRPCI::Vessel_set_Name_createRequest(uint64_t Vessel_ID, std::string value,
 
 bool KRPCI::Vessel_set_Name(uint64_t Vessel_ID, std::string value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_set_Name_createRequest(Vessel_ID, value, request);
@@ -12303,6 +14800,7 @@ bool KRPCI::Vessel_set_Name(uint64_t Vessel_ID, std::string value)
     }
   return true;
 }
+
 
 bool KRPCI::Vessel_get_Type_createRequest(uint64_t Vessel_ID, krpc::Request& request)
 {
@@ -12320,6 +14818,8 @@ bool KRPCI::Vessel_get_Type_createRequest(uint64_t Vessel_ID, krpc::Request& req
 
 bool KRPCI::Vessel_get_Type(uint64_t Vessel_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_Type_createRequest(Vessel_ID, request);
@@ -12332,6 +14832,11 @@ bool KRPCI::Vessel_get_Type(uint64_t Vessel_ID, int32_t& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_Type_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -12353,6 +14858,8 @@ bool KRPCI::Vessel_set_Type_createRequest(uint64_t Vessel_ID, int32_t value, krp
 
 bool KRPCI::Vessel_set_Type(uint64_t Vessel_ID, int32_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_set_Type_createRequest(Vessel_ID, value, request);
@@ -12367,6 +14874,7 @@ bool KRPCI::Vessel_set_Type(uint64_t Vessel_ID, int32_t value)
     }
   return true;
 }
+
 
 bool KRPCI::Vessel_get_Situation_createRequest(uint64_t Vessel_ID, krpc::Request& request)
 {
@@ -12384,6 +14892,8 @@ bool KRPCI::Vessel_get_Situation_createRequest(uint64_t Vessel_ID, krpc::Request
 
 bool KRPCI::Vessel_get_Situation(uint64_t Vessel_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_Situation_createRequest(Vessel_ID, request);
@@ -12396,6 +14906,11 @@ bool KRPCI::Vessel_get_Situation(uint64_t Vessel_ID, int32_t& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_Situation_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -12415,6 +14930,8 @@ bool KRPCI::Vessel_get_MET_createRequest(uint64_t Vessel_ID, krpc::Request& requ
 
 bool KRPCI::Vessel_get_MET(uint64_t Vessel_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_MET_createRequest(Vessel_ID, request);
@@ -12426,9 +14943,15 @@ bool KRPCI::Vessel_get_MET(uint64_t Vessel_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Vessel_get_MET_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_MET_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -12448,6 +14971,8 @@ bool KRPCI::Vessel_get_Target_createRequest(uint64_t Vessel_ID, krpc::Request& r
 
 bool KRPCI::Vessel_get_Target(uint64_t Vessel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_Target_createRequest(Vessel_ID, request);
@@ -12459,10 +14984,16 @@ bool KRPCI::Vessel_get_Target(uint64_t Vessel_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_get_Target_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_Target_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -12488,6 +15019,8 @@ bool KRPCI::Vessel_set_Target_createRequest(uint64_t Vessel_ID, uint64_t value, 
 
 bool KRPCI::Vessel_set_Target(uint64_t Vessel_ID, uint64_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_set_Target_createRequest(Vessel_ID, value, request);
@@ -12502,6 +15035,7 @@ bool KRPCI::Vessel_set_Target(uint64_t Vessel_ID, uint64_t value)
     }
   return true;
 }
+
 
 bool KRPCI::Vessel_get_Orbit_createRequest(uint64_t Vessel_ID, krpc::Request& request)
 {
@@ -12519,6 +15053,8 @@ bool KRPCI::Vessel_get_Orbit_createRequest(uint64_t Vessel_ID, krpc::Request& re
 
 bool KRPCI::Vessel_get_Orbit(uint64_t Vessel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_Orbit_createRequest(Vessel_ID, request);
@@ -12530,10 +15066,16 @@ bool KRPCI::Vessel_get_Orbit(uint64_t Vessel_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_get_Orbit_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_Orbit_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -12553,6 +15095,8 @@ bool KRPCI::Vessel_get_Control_createRequest(uint64_t Vessel_ID, krpc::Request& 
 
 bool KRPCI::Vessel_get_Control(uint64_t Vessel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_Control_createRequest(Vessel_ID, request);
@@ -12564,10 +15108,16 @@ bool KRPCI::Vessel_get_Control(uint64_t Vessel_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_get_Control_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_Control_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -12587,6 +15137,8 @@ bool KRPCI::Vessel_get_AutoPilot_createRequest(uint64_t Vessel_ID, krpc::Request
 
 bool KRPCI::Vessel_get_AutoPilot(uint64_t Vessel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_AutoPilot_createRequest(Vessel_ID, request);
@@ -12598,10 +15150,16 @@ bool KRPCI::Vessel_get_AutoPilot(uint64_t Vessel_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_get_AutoPilot_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_AutoPilot_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -12621,6 +15179,8 @@ bool KRPCI::Vessel_get_Resources_createRequest(uint64_t Vessel_ID, krpc::Request
 
 bool KRPCI::Vessel_get_Resources(uint64_t Vessel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_Resources_createRequest(Vessel_ID, request);
@@ -12632,10 +15192,16 @@ bool KRPCI::Vessel_get_Resources(uint64_t Vessel_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_get_Resources_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_Resources_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -12655,6 +15221,8 @@ bool KRPCI::Vessel_get_Parts_createRequest(uint64_t Vessel_ID, krpc::Request& re
 
 bool KRPCI::Vessel_get_Parts(uint64_t Vessel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_Parts_createRequest(Vessel_ID, request);
@@ -12666,10 +15234,16 @@ bool KRPCI::Vessel_get_Parts(uint64_t Vessel_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_get_Parts_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_Parts_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -12689,6 +15263,8 @@ bool KRPCI::Vessel_get_Comms_createRequest(uint64_t Vessel_ID, krpc::Request& re
 
 bool KRPCI::Vessel_get_Comms(uint64_t Vessel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_Comms_createRequest(Vessel_ID, request);
@@ -12700,10 +15276,16 @@ bool KRPCI::Vessel_get_Comms(uint64_t Vessel_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_get_Comms_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_Comms_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -12723,6 +15305,8 @@ bool KRPCI::Vessel_get_Mass_createRequest(uint64_t Vessel_ID, krpc::Request& req
 
 bool KRPCI::Vessel_get_Mass(uint64_t Vessel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_Mass_createRequest(Vessel_ID, request);
@@ -12734,9 +15318,15 @@ bool KRPCI::Vessel_get_Mass(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Vessel_get_Mass_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_Mass_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -12756,6 +15346,8 @@ bool KRPCI::Vessel_get_DryMass_createRequest(uint64_t Vessel_ID, krpc::Request& 
 
 bool KRPCI::Vessel_get_DryMass(uint64_t Vessel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_DryMass_createRequest(Vessel_ID, request);
@@ -12767,9 +15359,15 @@ bool KRPCI::Vessel_get_DryMass(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Vessel_get_DryMass_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_DryMass_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -12789,6 +15387,8 @@ bool KRPCI::Vessel_get_Thrust_createRequest(uint64_t Vessel_ID, krpc::Request& r
 
 bool KRPCI::Vessel_get_Thrust(uint64_t Vessel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_Thrust_createRequest(Vessel_ID, request);
@@ -12800,9 +15400,15 @@ bool KRPCI::Vessel_get_Thrust(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Vessel_get_Thrust_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_Thrust_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -12822,6 +15428,8 @@ bool KRPCI::Vessel_get_AvailableThrust_createRequest(uint64_t Vessel_ID, krpc::R
 
 bool KRPCI::Vessel_get_AvailableThrust(uint64_t Vessel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_AvailableThrust_createRequest(Vessel_ID, request);
@@ -12833,9 +15441,15 @@ bool KRPCI::Vessel_get_AvailableThrust(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Vessel_get_AvailableThrust_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_AvailableThrust_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -12855,6 +15469,8 @@ bool KRPCI::Vessel_get_MaxThrust_createRequest(uint64_t Vessel_ID, krpc::Request
 
 bool KRPCI::Vessel_get_MaxThrust(uint64_t Vessel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_MaxThrust_createRequest(Vessel_ID, request);
@@ -12866,9 +15482,15 @@ bool KRPCI::Vessel_get_MaxThrust(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Vessel_get_MaxThrust_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_MaxThrust_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -12888,6 +15510,8 @@ bool KRPCI::Vessel_get_MaxVacuumThrust_createRequest(uint64_t Vessel_ID, krpc::R
 
 bool KRPCI::Vessel_get_MaxVacuumThrust(uint64_t Vessel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_MaxVacuumThrust_createRequest(Vessel_ID, request);
@@ -12899,9 +15523,15 @@ bool KRPCI::Vessel_get_MaxVacuumThrust(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Vessel_get_MaxVacuumThrust_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_MaxVacuumThrust_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -12921,6 +15551,8 @@ bool KRPCI::Vessel_get_SpecificImpulse_createRequest(uint64_t Vessel_ID, krpc::R
 
 bool KRPCI::Vessel_get_SpecificImpulse(uint64_t Vessel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_SpecificImpulse_createRequest(Vessel_ID, request);
@@ -12932,9 +15564,15 @@ bool KRPCI::Vessel_get_SpecificImpulse(uint64_t Vessel_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Vessel_get_SpecificImpulse_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_SpecificImpulse_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -12954,6 +15592,8 @@ bool KRPCI::Vessel_get_VacuumSpecificImpulse_createRequest(uint64_t Vessel_ID, k
 
 bool KRPCI::Vessel_get_VacuumSpecificImpulse(uint64_t Vessel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_VacuumSpecificImpulse_createRequest(Vessel_ID, request);
@@ -12965,9 +15605,15 @@ bool KRPCI::Vessel_get_VacuumSpecificImpulse(uint64_t Vessel_ID, float& return_v
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Vessel_get_VacuumSpecificImpulse_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_VacuumSpecificImpulse_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -12987,6 +15633,8 @@ bool KRPCI::Vessel_get_KerbinSeaLevelSpecificImpulse_createRequest(uint64_t Vess
 
 bool KRPCI::Vessel_get_KerbinSeaLevelSpecificImpulse(uint64_t Vessel_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_KerbinSeaLevelSpecificImpulse_createRequest(Vessel_ID, request);
@@ -12998,9 +15646,15 @@ bool KRPCI::Vessel_get_KerbinSeaLevelSpecificImpulse(uint64_t Vessel_ID, float& 
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Vessel_get_KerbinSeaLevelSpecificImpulse_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_KerbinSeaLevelSpecificImpulse_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -13020,6 +15674,8 @@ bool KRPCI::Vessel_get_ReferenceFrame_createRequest(uint64_t Vessel_ID, krpc::Re
 
 bool KRPCI::Vessel_get_ReferenceFrame(uint64_t Vessel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_ReferenceFrame_createRequest(Vessel_ID, request);
@@ -13031,10 +15687,16 @@ bool KRPCI::Vessel_get_ReferenceFrame(uint64_t Vessel_ID, uint64_t& return_value
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_get_ReferenceFrame_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_ReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -13054,6 +15716,8 @@ bool KRPCI::Vessel_get_OrbitalReferenceFrame_createRequest(uint64_t Vessel_ID, k
 
 bool KRPCI::Vessel_get_OrbitalReferenceFrame(uint64_t Vessel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_OrbitalReferenceFrame_createRequest(Vessel_ID, request);
@@ -13065,10 +15729,16 @@ bool KRPCI::Vessel_get_OrbitalReferenceFrame(uint64_t Vessel_ID, uint64_t& retur
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_get_OrbitalReferenceFrame_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_OrbitalReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -13088,6 +15758,8 @@ bool KRPCI::Vessel_get_SurfaceReferenceFrame_createRequest(uint64_t Vessel_ID, k
 
 bool KRPCI::Vessel_get_SurfaceReferenceFrame(uint64_t Vessel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_SurfaceReferenceFrame_createRequest(Vessel_ID, request);
@@ -13099,10 +15771,16 @@ bool KRPCI::Vessel_get_SurfaceReferenceFrame(uint64_t Vessel_ID, uint64_t& retur
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_get_SurfaceReferenceFrame_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_SurfaceReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -13122,6 +15800,8 @@ bool KRPCI::Vessel_get_SurfaceVelocityReferenceFrame_createRequest(uint64_t Vess
 
 bool KRPCI::Vessel_get_SurfaceVelocityReferenceFrame(uint64_t Vessel_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Vessel_get_SurfaceVelocityReferenceFrame_createRequest(Vessel_ID, request);
@@ -13133,10 +15813,16 @@ bool KRPCI::Vessel_get_SurfaceVelocityReferenceFrame(uint64_t Vessel_ID, uint64_
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Vessel_get_SurfaceVelocityReferenceFrame_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Vessel_get_SurfaceVelocityReferenceFrame_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -13152,6 +15838,8 @@ bool KRPCI::AlarmWithName_createRequest(std::string name, krpc::Request& request
 
 bool KRPCI::AlarmWithName(std::string name, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AlarmWithName_createRequest(name, request);
@@ -13163,10 +15851,16 @@ bool KRPCI::AlarmWithName(std::string name, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      AlarmWithName_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::AlarmWithName_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -13182,6 +15876,8 @@ bool KRPCI::AlarmsWithType_createRequest(int32_t type, krpc::Request& request)
 
 bool KRPCI::AlarmsWithType(int32_t type, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AlarmsWithType_createRequest(type, request);
@@ -13193,16 +15889,22 @@ bool KRPCI::AlarmsWithType(int32_t type, std::vector<uint64_t>& return_vector)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      AlarmsWithType_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::AlarmsWithType_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -13225,6 +15927,8 @@ bool KRPCI::CreateAlarm_createRequest(int32_t type, std::string name, double ut,
 
 bool KRPCI::CreateAlarm(int32_t type, std::string name, double ut, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::CreateAlarm_createRequest(type, name, ut, request);
@@ -13236,10 +15940,16 @@ bool KRPCI::CreateAlarm(int32_t type, std::string name, double ut, uint64_t& ret
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      CreateAlarm_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::CreateAlarm_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -13252,6 +15962,8 @@ bool KRPCI::get_Alarms_createRequest(krpc::Request& request)
 
 bool KRPCI::get_Alarms(std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_Alarms_createRequest(request);
@@ -13263,16 +15975,22 @@ bool KRPCI::get_Alarms(std::vector<uint64_t>& return_vector)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      get_Alarms_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::get_Alarms_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -13293,6 +16011,8 @@ bool KRPCI::Alarm_Delete_createRequest(uint64_t Alarm_ID, krpc::Request& request
 
 bool KRPCI::Alarm_Delete(uint64_t Alarm_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_Delete_createRequest(Alarm_ID, request);
@@ -13307,6 +16027,7 @@ bool KRPCI::Alarm_Delete(uint64_t Alarm_ID)
     }
   return true;
 }
+
 
 bool KRPCI::Alarm_get_Action_createRequest(uint64_t Alarm_ID, krpc::Request& request)
 {
@@ -13324,6 +16045,8 @@ bool KRPCI::Alarm_get_Action_createRequest(uint64_t Alarm_ID, krpc::Request& req
 
 bool KRPCI::Alarm_get_Action(uint64_t Alarm_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_Action_createRequest(Alarm_ID, request);
@@ -13336,6 +16059,11 @@ bool KRPCI::Alarm_get_Action(uint64_t Alarm_ID, int32_t& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Action_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -13357,6 +16085,8 @@ bool KRPCI::Alarm_set_Action_createRequest(uint64_t Alarm_ID, int32_t value, krp
 
 bool KRPCI::Alarm_set_Action(uint64_t Alarm_ID, int32_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_set_Action_createRequest(Alarm_ID, value, request);
@@ -13371,6 +16101,7 @@ bool KRPCI::Alarm_set_Action(uint64_t Alarm_ID, int32_t value)
     }
   return true;
 }
+
 
 bool KRPCI::Alarm_get_Margin_createRequest(uint64_t Alarm_ID, krpc::Request& request)
 {
@@ -13388,6 +16119,8 @@ bool KRPCI::Alarm_get_Margin_createRequest(uint64_t Alarm_ID, krpc::Request& req
 
 bool KRPCI::Alarm_get_Margin(uint64_t Alarm_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_Margin_createRequest(Alarm_ID, request);
@@ -13399,9 +16132,15 @@ bool KRPCI::Alarm_get_Margin(uint64_t Alarm_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Alarm_get_Margin_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Margin_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -13425,6 +16164,8 @@ bool KRPCI::Alarm_set_Margin_createRequest(uint64_t Alarm_ID, double value, krpc
 
 bool KRPCI::Alarm_set_Margin(uint64_t Alarm_ID, double value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_set_Margin_createRequest(Alarm_ID, value, request);
@@ -13439,6 +16180,7 @@ bool KRPCI::Alarm_set_Margin(uint64_t Alarm_ID, double value)
     }
   return true;
 }
+
 
 bool KRPCI::Alarm_get_Time_createRequest(uint64_t Alarm_ID, krpc::Request& request)
 {
@@ -13456,6 +16198,8 @@ bool KRPCI::Alarm_get_Time_createRequest(uint64_t Alarm_ID, krpc::Request& reque
 
 bool KRPCI::Alarm_get_Time(uint64_t Alarm_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_Time_createRequest(Alarm_ID, request);
@@ -13467,9 +16211,15 @@ bool KRPCI::Alarm_get_Time(uint64_t Alarm_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Alarm_get_Time_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Time_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -13493,6 +16243,8 @@ bool KRPCI::Alarm_set_Time_createRequest(uint64_t Alarm_ID, double value, krpc::
 
 bool KRPCI::Alarm_set_Time(uint64_t Alarm_ID, double value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_set_Time_createRequest(Alarm_ID, value, request);
@@ -13507,6 +16259,7 @@ bool KRPCI::Alarm_set_Time(uint64_t Alarm_ID, double value)
     }
   return true;
 }
+
 
 bool KRPCI::Alarm_get_Type_createRequest(uint64_t Alarm_ID, krpc::Request& request)
 {
@@ -13524,6 +16277,8 @@ bool KRPCI::Alarm_get_Type_createRequest(uint64_t Alarm_ID, krpc::Request& reque
 
 bool KRPCI::Alarm_get_Type(uint64_t Alarm_ID, int32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_Type_createRequest(Alarm_ID, request);
@@ -13536,6 +16291,11 @@ bool KRPCI::Alarm_get_Type(uint64_t Alarm_ID, int32_t& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Type_parseResponse(krpc::Response response, int32_t& return_value)
+{
   return true;
 }
 
@@ -13555,6 +16315,8 @@ bool KRPCI::Alarm_get_ID_createRequest(uint64_t Alarm_ID, krpc::Request& request
 
 bool KRPCI::Alarm_get_ID(uint64_t Alarm_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_ID_createRequest(Alarm_ID, request);
@@ -13567,6 +16329,11 @@ bool KRPCI::Alarm_get_ID(uint64_t Alarm_ID, std::string& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_ID_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -13586,6 +16353,8 @@ bool KRPCI::Alarm_get_Name_createRequest(uint64_t Alarm_ID, krpc::Request& reque
 
 bool KRPCI::Alarm_get_Name(uint64_t Alarm_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_Name_createRequest(Alarm_ID, request);
@@ -13598,6 +16367,11 @@ bool KRPCI::Alarm_get_Name(uint64_t Alarm_ID, std::string& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Name_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -13619,6 +16393,8 @@ bool KRPCI::Alarm_set_Name_createRequest(uint64_t Alarm_ID, std::string value, k
 
 bool KRPCI::Alarm_set_Name(uint64_t Alarm_ID, std::string value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_set_Name_createRequest(Alarm_ID, value, request);
@@ -13633,6 +16409,7 @@ bool KRPCI::Alarm_set_Name(uint64_t Alarm_ID, std::string value)
     }
   return true;
 }
+
 
 bool KRPCI::Alarm_get_Notes_createRequest(uint64_t Alarm_ID, krpc::Request& request)
 {
@@ -13650,6 +16427,8 @@ bool KRPCI::Alarm_get_Notes_createRequest(uint64_t Alarm_ID, krpc::Request& requ
 
 bool KRPCI::Alarm_get_Notes(uint64_t Alarm_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_Notes_createRequest(Alarm_ID, request);
@@ -13662,6 +16441,11 @@ bool KRPCI::Alarm_get_Notes(uint64_t Alarm_ID, std::string& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Notes_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -13683,6 +16467,8 @@ bool KRPCI::Alarm_set_Notes_createRequest(uint64_t Alarm_ID, std::string value, 
 
 bool KRPCI::Alarm_set_Notes(uint64_t Alarm_ID, std::string value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_set_Notes_createRequest(Alarm_ID, value, request);
@@ -13697,6 +16483,7 @@ bool KRPCI::Alarm_set_Notes(uint64_t Alarm_ID, std::string value)
     }
   return true;
 }
+
 
 bool KRPCI::Alarm_get_Remaining_createRequest(uint64_t Alarm_ID, krpc::Request& request)
 {
@@ -13714,6 +16501,8 @@ bool KRPCI::Alarm_get_Remaining_createRequest(uint64_t Alarm_ID, krpc::Request& 
 
 bool KRPCI::Alarm_get_Remaining(uint64_t Alarm_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_Remaining_createRequest(Alarm_ID, request);
@@ -13725,9 +16514,15 @@ bool KRPCI::Alarm_get_Remaining(uint64_t Alarm_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Alarm_get_Remaining_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Remaining_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -13747,6 +16542,8 @@ bool KRPCI::Alarm_get_Repeat_createRequest(uint64_t Alarm_ID, krpc::Request& req
 
 bool KRPCI::Alarm_get_Repeat(uint64_t Alarm_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_Repeat_createRequest(Alarm_ID, request);
@@ -13759,6 +16556,11 @@ bool KRPCI::Alarm_get_Repeat(uint64_t Alarm_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Repeat_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -13784,6 +16586,8 @@ bool KRPCI::Alarm_set_Repeat_createRequest(uint64_t Alarm_ID, bool value, krpc::
 
 bool KRPCI::Alarm_set_Repeat(uint64_t Alarm_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_set_Repeat_createRequest(Alarm_ID, value, request);
@@ -13798,6 +16602,7 @@ bool KRPCI::Alarm_set_Repeat(uint64_t Alarm_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Alarm_get_RepeatPeriod_createRequest(uint64_t Alarm_ID, krpc::Request& request)
 {
@@ -13815,6 +16620,8 @@ bool KRPCI::Alarm_get_RepeatPeriod_createRequest(uint64_t Alarm_ID, krpc::Reques
 
 bool KRPCI::Alarm_get_RepeatPeriod(uint64_t Alarm_ID, double& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_RepeatPeriod_createRequest(Alarm_ID, request);
@@ -13826,9 +16633,15 @@ bool KRPCI::Alarm_get_RepeatPeriod(uint64_t Alarm_ID, double& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Alarm_get_RepeatPeriod_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_RepeatPeriod_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -13852,6 +16665,8 @@ bool KRPCI::Alarm_set_RepeatPeriod_createRequest(uint64_t Alarm_ID, double value
 
 bool KRPCI::Alarm_set_RepeatPeriod(uint64_t Alarm_ID, double value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_set_RepeatPeriod_createRequest(Alarm_ID, value, request);
@@ -13866,6 +16681,7 @@ bool KRPCI::Alarm_set_RepeatPeriod(uint64_t Alarm_ID, double value)
     }
   return true;
 }
+
 
 bool KRPCI::Alarm_get_Vessel_createRequest(uint64_t Alarm_ID, krpc::Request& request)
 {
@@ -13883,6 +16699,8 @@ bool KRPCI::Alarm_get_Vessel_createRequest(uint64_t Alarm_ID, krpc::Request& req
 
 bool KRPCI::Alarm_get_Vessel(uint64_t Alarm_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_Vessel_createRequest(Alarm_ID, request);
@@ -13894,10 +16712,16 @@ bool KRPCI::Alarm_get_Vessel(uint64_t Alarm_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Alarm_get_Vessel_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_Vessel_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -13923,6 +16747,8 @@ bool KRPCI::Alarm_set_Vessel_createRequest(uint64_t Alarm_ID, uint64_t value, kr
 
 bool KRPCI::Alarm_set_Vessel(uint64_t Alarm_ID, uint64_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_set_Vessel_createRequest(Alarm_ID, value, request);
@@ -13937,6 +16763,7 @@ bool KRPCI::Alarm_set_Vessel(uint64_t Alarm_ID, uint64_t value)
     }
   return true;
 }
+
 
 bool KRPCI::Alarm_get_XferOriginBody_createRequest(uint64_t Alarm_ID, krpc::Request& request)
 {
@@ -13954,6 +16781,8 @@ bool KRPCI::Alarm_get_XferOriginBody_createRequest(uint64_t Alarm_ID, krpc::Requ
 
 bool KRPCI::Alarm_get_XferOriginBody(uint64_t Alarm_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_XferOriginBody_createRequest(Alarm_ID, request);
@@ -13965,10 +16794,16 @@ bool KRPCI::Alarm_get_XferOriginBody(uint64_t Alarm_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Alarm_get_XferOriginBody_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_XferOriginBody_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -13994,6 +16829,8 @@ bool KRPCI::Alarm_set_XferOriginBody_createRequest(uint64_t Alarm_ID, uint64_t v
 
 bool KRPCI::Alarm_set_XferOriginBody(uint64_t Alarm_ID, uint64_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_set_XferOriginBody_createRequest(Alarm_ID, value, request);
@@ -14008,6 +16845,7 @@ bool KRPCI::Alarm_set_XferOriginBody(uint64_t Alarm_ID, uint64_t value)
     }
   return true;
 }
+
 
 bool KRPCI::Alarm_get_XferTargetBody_createRequest(uint64_t Alarm_ID, krpc::Request& request)
 {
@@ -14025,6 +16863,8 @@ bool KRPCI::Alarm_get_XferTargetBody_createRequest(uint64_t Alarm_ID, krpc::Requ
 
 bool KRPCI::Alarm_get_XferTargetBody(uint64_t Alarm_ID, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_get_XferTargetBody_createRequest(Alarm_ID, request);
@@ -14036,10 +16876,16 @@ bool KRPCI::Alarm_get_XferTargetBody(uint64_t Alarm_ID, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      Alarm_get_XferTargetBody_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Alarm_get_XferTargetBody_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -14065,6 +16911,8 @@ bool KRPCI::Alarm_set_XferTargetBody_createRequest(uint64_t Alarm_ID, uint64_t v
 
 bool KRPCI::Alarm_set_XferTargetBody(uint64_t Alarm_ID, uint64_t value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Alarm_set_XferTargetBody_createRequest(Alarm_ID, value, request);
@@ -14080,6 +16928,7 @@ bool KRPCI::Alarm_set_XferTargetBody(uint64_t Alarm_ID, uint64_t value)
   return true;
 }
 
+
 bool KRPCI::ServoGroupWithName_createRequest(std::string name, krpc::Request& request)
 {
   request.set_service("InfernalRobotics");
@@ -14092,6 +16941,8 @@ bool KRPCI::ServoGroupWithName_createRequest(std::string name, krpc::Request& re
 
 bool KRPCI::ServoGroupWithName(std::string name, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ServoGroupWithName_createRequest(name, request);
@@ -14103,10 +16954,16 @@ bool KRPCI::ServoGroupWithName(std::string name, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      ServoGroupWithName_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::ServoGroupWithName_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -14122,6 +16979,8 @@ bool KRPCI::ServoWithName_createRequest(std::string name, krpc::Request& request
 
 bool KRPCI::ServoWithName(std::string name, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ServoWithName_createRequest(name, request);
@@ -14133,10 +16992,16 @@ bool KRPCI::ServoWithName(std::string name, uint64_t& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      ServoWithName_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::ServoWithName_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -14149,6 +17014,8 @@ bool KRPCI::get_ServoGroups_createRequest(krpc::Request& request)
 
 bool KRPCI::get_ServoGroups(std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::get_ServoGroups_createRequest(request);
@@ -14160,16 +17027,22 @@ bool KRPCI::get_ServoGroups(std::vector<uint64_t>& return_vector)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      get_ServoGroups_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::get_ServoGroups_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -14192,6 +17065,8 @@ bool KRPCI::ControlGroup_ServoWithName_createRequest(uint64_t ControlGroup_ID, s
 
 bool KRPCI::ControlGroup_ServoWithName(uint64_t ControlGroup_ID, std::string name, uint64_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_ServoWithName_createRequest(ControlGroup_ID, name, request);
@@ -14203,10 +17078,16 @@ bool KRPCI::ControlGroup_ServoWithName(uint64_t ControlGroup_ID, std::string nam
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      KRPCI::DecodeVarint(return_value, 
-			  (char *)response.return_value().data(), 
-			  response.return_value().size());
+      ControlGroup_ServoWithName_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::ControlGroup_ServoWithName_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
   return true;
 }
 
@@ -14226,6 +17107,8 @@ bool KRPCI::ControlGroup_MoveRight_createRequest(uint64_t ControlGroup_ID, krpc:
 
 bool KRPCI::ControlGroup_MoveRight(uint64_t ControlGroup_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_MoveRight_createRequest(ControlGroup_ID, request);
@@ -14240,6 +17123,7 @@ bool KRPCI::ControlGroup_MoveRight(uint64_t ControlGroup_ID)
     }
   return true;
 }
+
 
 bool KRPCI::ControlGroup_MoveLeft_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
 {
@@ -14257,6 +17141,8 @@ bool KRPCI::ControlGroup_MoveLeft_createRequest(uint64_t ControlGroup_ID, krpc::
 
 bool KRPCI::ControlGroup_MoveLeft(uint64_t ControlGroup_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_MoveLeft_createRequest(ControlGroup_ID, request);
@@ -14271,6 +17157,7 @@ bool KRPCI::ControlGroup_MoveLeft(uint64_t ControlGroup_ID)
     }
   return true;
 }
+
 
 bool KRPCI::ControlGroup_MoveCenter_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
 {
@@ -14288,6 +17175,8 @@ bool KRPCI::ControlGroup_MoveCenter_createRequest(uint64_t ControlGroup_ID, krpc
 
 bool KRPCI::ControlGroup_MoveCenter(uint64_t ControlGroup_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_MoveCenter_createRequest(ControlGroup_ID, request);
@@ -14302,6 +17191,7 @@ bool KRPCI::ControlGroup_MoveCenter(uint64_t ControlGroup_ID)
     }
   return true;
 }
+
 
 bool KRPCI::ControlGroup_MoveNextPreset_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
 {
@@ -14319,6 +17209,8 @@ bool KRPCI::ControlGroup_MoveNextPreset_createRequest(uint64_t ControlGroup_ID, 
 
 bool KRPCI::ControlGroup_MoveNextPreset(uint64_t ControlGroup_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_MoveNextPreset_createRequest(ControlGroup_ID, request);
@@ -14333,6 +17225,7 @@ bool KRPCI::ControlGroup_MoveNextPreset(uint64_t ControlGroup_ID)
     }
   return true;
 }
+
 
 bool KRPCI::ControlGroup_MovePrevPreset_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
 {
@@ -14350,6 +17243,8 @@ bool KRPCI::ControlGroup_MovePrevPreset_createRequest(uint64_t ControlGroup_ID, 
 
 bool KRPCI::ControlGroup_MovePrevPreset(uint64_t ControlGroup_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_MovePrevPreset_createRequest(ControlGroup_ID, request);
@@ -14364,6 +17259,7 @@ bool KRPCI::ControlGroup_MovePrevPreset(uint64_t ControlGroup_ID)
     }
   return true;
 }
+
 
 bool KRPCI::ControlGroup_Stop_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
 {
@@ -14381,6 +17277,8 @@ bool KRPCI::ControlGroup_Stop_createRequest(uint64_t ControlGroup_ID, krpc::Requ
 
 bool KRPCI::ControlGroup_Stop(uint64_t ControlGroup_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_Stop_createRequest(ControlGroup_ID, request);
@@ -14395,6 +17293,7 @@ bool KRPCI::ControlGroup_Stop(uint64_t ControlGroup_ID)
     }
   return true;
 }
+
 
 bool KRPCI::ControlGroup_get_Name_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
 {
@@ -14412,6 +17311,8 @@ bool KRPCI::ControlGroup_get_Name_createRequest(uint64_t ControlGroup_ID, krpc::
 
 bool KRPCI::ControlGroup_get_Name(uint64_t ControlGroup_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_get_Name_createRequest(ControlGroup_ID, request);
@@ -14424,6 +17325,11 @@ bool KRPCI::ControlGroup_get_Name(uint64_t ControlGroup_ID, std::string& return_
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Name_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -14445,6 +17351,8 @@ bool KRPCI::ControlGroup_set_Name_createRequest(uint64_t ControlGroup_ID, std::s
 
 bool KRPCI::ControlGroup_set_Name(uint64_t ControlGroup_ID, std::string value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_set_Name_createRequest(ControlGroup_ID, value, request);
@@ -14459,6 +17367,7 @@ bool KRPCI::ControlGroup_set_Name(uint64_t ControlGroup_ID, std::string value)
     }
   return true;
 }
+
 
 bool KRPCI::ControlGroup_get_ForwardKey_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
 {
@@ -14476,6 +17385,8 @@ bool KRPCI::ControlGroup_get_ForwardKey_createRequest(uint64_t ControlGroup_ID, 
 
 bool KRPCI::ControlGroup_get_ForwardKey(uint64_t ControlGroup_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_get_ForwardKey_createRequest(ControlGroup_ID, request);
@@ -14488,6 +17399,11 @@ bool KRPCI::ControlGroup_get_ForwardKey(uint64_t ControlGroup_ID, std::string& r
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_ForwardKey_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -14509,6 +17425,8 @@ bool KRPCI::ControlGroup_set_ForwardKey_createRequest(uint64_t ControlGroup_ID, 
 
 bool KRPCI::ControlGroup_set_ForwardKey(uint64_t ControlGroup_ID, std::string value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_set_ForwardKey_createRequest(ControlGroup_ID, value, request);
@@ -14523,6 +17441,7 @@ bool KRPCI::ControlGroup_set_ForwardKey(uint64_t ControlGroup_ID, std::string va
     }
   return true;
 }
+
 
 bool KRPCI::ControlGroup_get_ReverseKey_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
 {
@@ -14540,6 +17459,8 @@ bool KRPCI::ControlGroup_get_ReverseKey_createRequest(uint64_t ControlGroup_ID, 
 
 bool KRPCI::ControlGroup_get_ReverseKey(uint64_t ControlGroup_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_get_ReverseKey_createRequest(ControlGroup_ID, request);
@@ -14552,6 +17473,11 @@ bool KRPCI::ControlGroup_get_ReverseKey(uint64_t ControlGroup_ID, std::string& r
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_ReverseKey_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -14573,6 +17499,8 @@ bool KRPCI::ControlGroup_set_ReverseKey_createRequest(uint64_t ControlGroup_ID, 
 
 bool KRPCI::ControlGroup_set_ReverseKey(uint64_t ControlGroup_ID, std::string value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_set_ReverseKey_createRequest(ControlGroup_ID, value, request);
@@ -14587,6 +17515,7 @@ bool KRPCI::ControlGroup_set_ReverseKey(uint64_t ControlGroup_ID, std::string va
     }
   return true;
 }
+
 
 bool KRPCI::ControlGroup_get_Speed_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
 {
@@ -14604,6 +17533,8 @@ bool KRPCI::ControlGroup_get_Speed_createRequest(uint64_t ControlGroup_ID, krpc:
 
 bool KRPCI::ControlGroup_get_Speed(uint64_t ControlGroup_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_get_Speed_createRequest(ControlGroup_ID, request);
@@ -14615,9 +17546,15 @@ bool KRPCI::ControlGroup_get_Speed(uint64_t ControlGroup_ID, float& return_value
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      ControlGroup_get_Speed_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Speed_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -14641,6 +17578,8 @@ bool KRPCI::ControlGroup_set_Speed_createRequest(uint64_t ControlGroup_ID, float
 
 bool KRPCI::ControlGroup_set_Speed(uint64_t ControlGroup_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_set_Speed_createRequest(ControlGroup_ID, value, request);
@@ -14655,6 +17594,7 @@ bool KRPCI::ControlGroup_set_Speed(uint64_t ControlGroup_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::ControlGroup_get_Expanded_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
 {
@@ -14672,6 +17612,8 @@ bool KRPCI::ControlGroup_get_Expanded_createRequest(uint64_t ControlGroup_ID, kr
 
 bool KRPCI::ControlGroup_get_Expanded(uint64_t ControlGroup_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_get_Expanded_createRequest(ControlGroup_ID, request);
@@ -14684,6 +17626,11 @@ bool KRPCI::ControlGroup_get_Expanded(uint64_t ControlGroup_ID, bool& return_val
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Expanded_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -14709,6 +17656,8 @@ bool KRPCI::ControlGroup_set_Expanded_createRequest(uint64_t ControlGroup_ID, bo
 
 bool KRPCI::ControlGroup_set_Expanded(uint64_t ControlGroup_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_set_Expanded_createRequest(ControlGroup_ID, value, request);
@@ -14723,6 +17672,7 @@ bool KRPCI::ControlGroup_set_Expanded(uint64_t ControlGroup_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::ControlGroup_get_Servos_createRequest(uint64_t ControlGroup_ID, krpc::Request& request)
 {
@@ -14740,6 +17690,8 @@ bool KRPCI::ControlGroup_get_Servos_createRequest(uint64_t ControlGroup_ID, krpc
 
 bool KRPCI::ControlGroup_get_Servos(uint64_t ControlGroup_ID, std::vector<uint64_t>& return_vector)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::ControlGroup_get_Servos_createRequest(ControlGroup_ID, request);
@@ -14751,16 +17703,22 @@ bool KRPCI::ControlGroup_get_Servos(uint64_t ControlGroup_ID, std::vector<uint64
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      krpc::List output_list;
-      output_list.ParseFromString(response.return_value());
-      for(int i=0; i< output_list.items_size(); i++)
-	{
-	  uint64_t return_value;
-	  KRPCI::DecodeVarint(return_value,
-			      (char *)output_list.items(i).data(),
-			      output_list.items(i).size());
-	  return_vector.push_back(return_value);
-	}
+      ControlGroup_get_Servos_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::ControlGroup_get_Servos_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
     }
   return true;
 }
@@ -14781,6 +17739,8 @@ bool KRPCI::Servo_MoveRight_createRequest(uint64_t Servo_ID, krpc::Request& requ
 
 bool KRPCI::Servo_MoveRight(uint64_t Servo_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_MoveRight_createRequest(Servo_ID, request);
@@ -14795,6 +17755,7 @@ bool KRPCI::Servo_MoveRight(uint64_t Servo_ID)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_MoveLeft_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -14812,6 +17773,8 @@ bool KRPCI::Servo_MoveLeft_createRequest(uint64_t Servo_ID, krpc::Request& reque
 
 bool KRPCI::Servo_MoveLeft(uint64_t Servo_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_MoveLeft_createRequest(Servo_ID, request);
@@ -14826,6 +17789,7 @@ bool KRPCI::Servo_MoveLeft(uint64_t Servo_ID)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_MoveCenter_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -14843,6 +17807,8 @@ bool KRPCI::Servo_MoveCenter_createRequest(uint64_t Servo_ID, krpc::Request& req
 
 bool KRPCI::Servo_MoveCenter(uint64_t Servo_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_MoveCenter_createRequest(Servo_ID, request);
@@ -14857,6 +17823,7 @@ bool KRPCI::Servo_MoveCenter(uint64_t Servo_ID)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_MoveNextPreset_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -14874,6 +17841,8 @@ bool KRPCI::Servo_MoveNextPreset_createRequest(uint64_t Servo_ID, krpc::Request&
 
 bool KRPCI::Servo_MoveNextPreset(uint64_t Servo_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_MoveNextPreset_createRequest(Servo_ID, request);
@@ -14888,6 +17857,7 @@ bool KRPCI::Servo_MoveNextPreset(uint64_t Servo_ID)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_MovePrevPreset_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -14905,6 +17875,8 @@ bool KRPCI::Servo_MovePrevPreset_createRequest(uint64_t Servo_ID, krpc::Request&
 
 bool KRPCI::Servo_MovePrevPreset(uint64_t Servo_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_MovePrevPreset_createRequest(Servo_ID, request);
@@ -14919,6 +17891,7 @@ bool KRPCI::Servo_MovePrevPreset(uint64_t Servo_ID)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_MoveTo_createRequest(uint64_t Servo_ID, float position, float speed, krpc::Request& request)
 {
@@ -14944,6 +17917,8 @@ bool KRPCI::Servo_MoveTo_createRequest(uint64_t Servo_ID, float position, float 
 
 bool KRPCI::Servo_MoveTo(uint64_t Servo_ID, float position, float speed)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_MoveTo_createRequest(Servo_ID, position, speed, request);
@@ -14958,6 +17933,7 @@ bool KRPCI::Servo_MoveTo(uint64_t Servo_ID, float position, float speed)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_Stop_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -14975,6 +17951,8 @@ bool KRPCI::Servo_Stop_createRequest(uint64_t Servo_ID, krpc::Request& request)
 
 bool KRPCI::Servo_Stop(uint64_t Servo_ID)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_Stop_createRequest(Servo_ID, request);
@@ -14989,6 +17967,7 @@ bool KRPCI::Servo_Stop(uint64_t Servo_ID)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_get_Name_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -15006,6 +17985,8 @@ bool KRPCI::Servo_get_Name_createRequest(uint64_t Servo_ID, krpc::Request& reque
 
 bool KRPCI::Servo_get_Name(uint64_t Servo_ID, std::string& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_Name_createRequest(Servo_ID, request);
@@ -15018,6 +17999,11 @@ bool KRPCI::Servo_get_Name(uint64_t Servo_ID, std::string& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_Name_parseResponse(krpc::Response response, std::string& return_value)
+{
   return true;
 }
 
@@ -15039,6 +18025,8 @@ bool KRPCI::Servo_set_Name_createRequest(uint64_t Servo_ID, std::string value, k
 
 bool KRPCI::Servo_set_Name(uint64_t Servo_ID, std::string value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_set_Name_createRequest(Servo_ID, value, request);
@@ -15053,6 +18041,7 @@ bool KRPCI::Servo_set_Name(uint64_t Servo_ID, std::string value)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_set_Highlight_createRequest(uint64_t Servo_ID, bool value, krpc::Request& request)
 {
@@ -15076,6 +18065,8 @@ bool KRPCI::Servo_set_Highlight_createRequest(uint64_t Servo_ID, bool value, krp
 
 bool KRPCI::Servo_set_Highlight(uint64_t Servo_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_set_Highlight_createRequest(Servo_ID, value, request);
@@ -15090,6 +18081,7 @@ bool KRPCI::Servo_set_Highlight(uint64_t Servo_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_get_Position_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -15107,6 +18099,8 @@ bool KRPCI::Servo_get_Position_createRequest(uint64_t Servo_ID, krpc::Request& r
 
 bool KRPCI::Servo_get_Position(uint64_t Servo_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_Position_createRequest(Servo_ID, request);
@@ -15118,9 +18112,15 @@ bool KRPCI::Servo_get_Position(uint64_t Servo_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Servo_get_Position_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_Position_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -15140,6 +18140,8 @@ bool KRPCI::Servo_get_MinConfigPosition_createRequest(uint64_t Servo_ID, krpc::R
 
 bool KRPCI::Servo_get_MinConfigPosition(uint64_t Servo_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_MinConfigPosition_createRequest(Servo_ID, request);
@@ -15151,9 +18153,15 @@ bool KRPCI::Servo_get_MinConfigPosition(uint64_t Servo_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Servo_get_MinConfigPosition_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_MinConfigPosition_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -15173,6 +18181,8 @@ bool KRPCI::Servo_get_MaxConfigPosition_createRequest(uint64_t Servo_ID, krpc::R
 
 bool KRPCI::Servo_get_MaxConfigPosition(uint64_t Servo_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_MaxConfigPosition_createRequest(Servo_ID, request);
@@ -15184,9 +18194,15 @@ bool KRPCI::Servo_get_MaxConfigPosition(uint64_t Servo_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Servo_get_MaxConfigPosition_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_MaxConfigPosition_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -15206,6 +18222,8 @@ bool KRPCI::Servo_get_MinPosition_createRequest(uint64_t Servo_ID, krpc::Request
 
 bool KRPCI::Servo_get_MinPosition(uint64_t Servo_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_MinPosition_createRequest(Servo_ID, request);
@@ -15217,9 +18235,15 @@ bool KRPCI::Servo_get_MinPosition(uint64_t Servo_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Servo_get_MinPosition_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_MinPosition_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -15243,6 +18267,8 @@ bool KRPCI::Servo_set_MinPosition_createRequest(uint64_t Servo_ID, float value, 
 
 bool KRPCI::Servo_set_MinPosition(uint64_t Servo_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_set_MinPosition_createRequest(Servo_ID, value, request);
@@ -15257,6 +18283,7 @@ bool KRPCI::Servo_set_MinPosition(uint64_t Servo_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_get_MaxPosition_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -15274,6 +18301,8 @@ bool KRPCI::Servo_get_MaxPosition_createRequest(uint64_t Servo_ID, krpc::Request
 
 bool KRPCI::Servo_get_MaxPosition(uint64_t Servo_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_MaxPosition_createRequest(Servo_ID, request);
@@ -15285,9 +18314,15 @@ bool KRPCI::Servo_get_MaxPosition(uint64_t Servo_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Servo_get_MaxPosition_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_MaxPosition_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -15311,6 +18346,8 @@ bool KRPCI::Servo_set_MaxPosition_createRequest(uint64_t Servo_ID, float value, 
 
 bool KRPCI::Servo_set_MaxPosition(uint64_t Servo_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_set_MaxPosition_createRequest(Servo_ID, value, request);
@@ -15325,6 +18362,7 @@ bool KRPCI::Servo_set_MaxPosition(uint64_t Servo_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_get_ConfigSpeed_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -15342,6 +18380,8 @@ bool KRPCI::Servo_get_ConfigSpeed_createRequest(uint64_t Servo_ID, krpc::Request
 
 bool KRPCI::Servo_get_ConfigSpeed(uint64_t Servo_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_ConfigSpeed_createRequest(Servo_ID, request);
@@ -15353,9 +18393,15 @@ bool KRPCI::Servo_get_ConfigSpeed(uint64_t Servo_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Servo_get_ConfigSpeed_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_ConfigSpeed_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -15375,6 +18421,8 @@ bool KRPCI::Servo_get_Speed_createRequest(uint64_t Servo_ID, krpc::Request& requ
 
 bool KRPCI::Servo_get_Speed(uint64_t Servo_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_Speed_createRequest(Servo_ID, request);
@@ -15386,9 +18434,15 @@ bool KRPCI::Servo_get_Speed(uint64_t Servo_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Servo_get_Speed_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_Speed_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -15412,6 +18466,8 @@ bool KRPCI::Servo_set_Speed_createRequest(uint64_t Servo_ID, float value, krpc::
 
 bool KRPCI::Servo_set_Speed(uint64_t Servo_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_set_Speed_createRequest(Servo_ID, value, request);
@@ -15426,6 +18482,7 @@ bool KRPCI::Servo_set_Speed(uint64_t Servo_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_get_CurrentSpeed_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -15443,6 +18500,8 @@ bool KRPCI::Servo_get_CurrentSpeed_createRequest(uint64_t Servo_ID, krpc::Reques
 
 bool KRPCI::Servo_get_CurrentSpeed(uint64_t Servo_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_CurrentSpeed_createRequest(Servo_ID, request);
@@ -15454,9 +18513,15 @@ bool KRPCI::Servo_get_CurrentSpeed(uint64_t Servo_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Servo_get_CurrentSpeed_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_CurrentSpeed_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -15480,6 +18545,8 @@ bool KRPCI::Servo_set_CurrentSpeed_createRequest(uint64_t Servo_ID, float value,
 
 bool KRPCI::Servo_set_CurrentSpeed(uint64_t Servo_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_set_CurrentSpeed_createRequest(Servo_ID, value, request);
@@ -15494,6 +18561,7 @@ bool KRPCI::Servo_set_CurrentSpeed(uint64_t Servo_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_get_Acceleration_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -15511,6 +18579,8 @@ bool KRPCI::Servo_get_Acceleration_createRequest(uint64_t Servo_ID, krpc::Reques
 
 bool KRPCI::Servo_get_Acceleration(uint64_t Servo_ID, float& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_Acceleration_createRequest(Servo_ID, request);
@@ -15522,9 +18592,15 @@ bool KRPCI::Servo_get_Acceleration(uint64_t Servo_ID, float& return_value)
 	  std::cout << "Response error: " << response.error() << endl;
 	  return false;
 	}
-      return_value = 0.0;
-      memcpy(&return_value, response.return_value().data(), response.return_value().size());
+      Servo_get_Acceleration_parseResponse(response, return_value);
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_Acceleration_parseResponse(krpc::Response response, float& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 
@@ -15548,6 +18624,8 @@ bool KRPCI::Servo_set_Acceleration_createRequest(uint64_t Servo_ID, float value,
 
 bool KRPCI::Servo_set_Acceleration(uint64_t Servo_ID, float value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_set_Acceleration_createRequest(Servo_ID, value, request);
@@ -15562,6 +18640,7 @@ bool KRPCI::Servo_set_Acceleration(uint64_t Servo_ID, float value)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_get_IsMoving_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -15579,6 +18658,8 @@ bool KRPCI::Servo_get_IsMoving_createRequest(uint64_t Servo_ID, krpc::Request& r
 
 bool KRPCI::Servo_get_IsMoving(uint64_t Servo_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_IsMoving_createRequest(Servo_ID, request);
@@ -15591,6 +18672,11 @@ bool KRPCI::Servo_get_IsMoving(uint64_t Servo_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_IsMoving_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -15610,6 +18696,8 @@ bool KRPCI::Servo_get_IsFreeMoving_createRequest(uint64_t Servo_ID, krpc::Reques
 
 bool KRPCI::Servo_get_IsFreeMoving(uint64_t Servo_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_IsFreeMoving_createRequest(Servo_ID, request);
@@ -15622,6 +18710,11 @@ bool KRPCI::Servo_get_IsFreeMoving(uint64_t Servo_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_IsFreeMoving_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -15641,6 +18734,8 @@ bool KRPCI::Servo_get_IsLocked_createRequest(uint64_t Servo_ID, krpc::Request& r
 
 bool KRPCI::Servo_get_IsLocked(uint64_t Servo_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_IsLocked_createRequest(Servo_ID, request);
@@ -15653,6 +18748,11 @@ bool KRPCI::Servo_get_IsLocked(uint64_t Servo_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_IsLocked_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -15678,6 +18778,8 @@ bool KRPCI::Servo_set_IsLocked_createRequest(uint64_t Servo_ID, bool value, krpc
 
 bool KRPCI::Servo_set_IsLocked(uint64_t Servo_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_set_IsLocked_createRequest(Servo_ID, value, request);
@@ -15692,6 +18794,7 @@ bool KRPCI::Servo_set_IsLocked(uint64_t Servo_ID, bool value)
     }
   return true;
 }
+
 
 bool KRPCI::Servo_get_IsAxisInverted_createRequest(uint64_t Servo_ID, krpc::Request& request)
 {
@@ -15709,6 +18812,8 @@ bool KRPCI::Servo_get_IsAxisInverted_createRequest(uint64_t Servo_ID, krpc::Requ
 
 bool KRPCI::Servo_get_IsAxisInverted(uint64_t Servo_ID, bool& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_get_IsAxisInverted_createRequest(Servo_ID, request);
@@ -15721,6 +18826,11 @@ bool KRPCI::Servo_get_IsAxisInverted(uint64_t Servo_ID, bool& return_value)
 	  return false;
 	}
     }
+  return true;
+}
+
+bool KRPCI::Servo_get_IsAxisInverted_parseResponse(krpc::Response response, bool& return_value)
+{
   return true;
 }
 
@@ -15746,6 +18856,8 @@ bool KRPCI::Servo_set_IsAxisInverted_createRequest(uint64_t Servo_ID, bool value
 
 bool KRPCI::Servo_set_IsAxisInverted(uint64_t Servo_ID, bool value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::Servo_set_IsAxisInverted_createRequest(Servo_ID, value, request);
@@ -15761,6 +18873,7 @@ bool KRPCI::Servo_set_IsAxisInverted(uint64_t Servo_ID, bool value)
   return true;
 }
 
+
 bool KRPCI::GetStatus_createRequest(krpc::Request& request)
 {
   request.set_service("KRPC");
@@ -15770,6 +18883,8 @@ bool KRPCI::GetStatus_createRequest(krpc::Request& request)
 
 bool KRPCI::GetStatus(krpc::Status& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::GetStatus_createRequest(request);
@@ -15785,6 +18900,11 @@ bool KRPCI::GetStatus(krpc::Status& return_value)
   return true;
 }
 
+bool KRPCI::GetStatus_parseResponse(krpc::Response response, krpc::Status& return_value)
+{
+  return true;
+}
+
 bool KRPCI::GetServices_createRequest(krpc::Request& request)
 {
   request.set_service("KRPC");
@@ -15794,6 +18914,8 @@ bool KRPCI::GetServices_createRequest(krpc::Request& request)
 
 bool KRPCI::GetServices(krpc::Services& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::GetServices_createRequest(request);
@@ -15809,6 +18931,11 @@ bool KRPCI::GetServices(krpc::Services& return_value)
   return true;
 }
 
+bool KRPCI::GetServices_parseResponse(krpc::Response response, krpc::Services& return_value)
+{
+  return true;
+}
+
 bool KRPCI::AddStream_createRequest(krpc::Request input_request, krpc::Request& request)
 {
   request.set_service("KRPC");
@@ -15821,6 +18948,8 @@ bool KRPCI::AddStream_createRequest(krpc::Request input_request, krpc::Request& 
 
 bool KRPCI::AddStream(krpc::Request input_request, uint32_t& return_value)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::AddStream_createRequest(input_request, request);
@@ -15836,6 +18965,11 @@ bool KRPCI::AddStream(krpc::Request input_request, uint32_t& return_value)
   return true;
 }
 
+bool KRPCI::AddStream_parseResponse(krpc::Response response, uint32_t& return_value)
+{
+  return true;
+}
+
 bool KRPCI::RemoveStream_createRequest(uint32_t id, krpc::Request& request)
 {
   request.set_service("KRPC");
@@ -15848,6 +18982,8 @@ bool KRPCI::RemoveStream_createRequest(uint32_t id, krpc::Request& request)
 
 bool KRPCI::RemoveStream(uint32_t id)
 {
+  if (!connected_)
+    return false;
   krpc::Request request;
   krpc::Response response;
   KRPCI::RemoveStream_createRequest(id, request);
@@ -15860,6 +18996,448 @@ bool KRPCI::RemoveStream(uint32_t id)
 	  return false;
 	}
     }
+  return true;
+}
+
+
+bool KRPCI::GetSensors_createRequest(krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("GetSensors");
+  return true;
+}
+
+bool KRPCI::GetSensors(std::vector<uint64_t>& return_vector)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::GetSensors_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      GetSensors_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::GetSensors_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
+    }
+  return true;
+}
+
+bool KRPCI::GetSensorTags_createRequest(krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("GetSensorTags");
+  return true;
+}
+
+bool KRPCI::GetSensorTags(std::vector<uint64_t>& return_vector)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::GetSensorTags_createRequest(request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      GetSensorTags_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::GetSensorTags_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
+    }
+  return true;
+}
+
+bool KRPCI::GetSensor_createRequest(std::string sTag, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("GetSensor");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  return true;
+}
+
+bool KRPCI::GetSensor(std::string sTag, uint64_t& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::GetSensor_createRequest(sTag, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      GetSensor_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::GetSensor_parseResponse(krpc::Response response, uint64_t& return_value)
+{
+  KRPCI::DecodeVarint(return_value, 
+		      (char *)response.return_value().data(), 
+		      response.return_value().size());
+  return true;
+}
+
+bool KRPCI::KSPSensor_Fail_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_Fail");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_Fail(uint64_t KSPSensor_ID)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_Fail_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+
+bool KRPCI::KSPSensor_Repair_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_Repair");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_Repair(uint64_t KSPSensor_ID)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_Repair_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+
+bool KRPCI::KSPSensor_get_SensorTag_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_get_SensorTag");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_SensorTag(uint64_t KSPSensor_ID, std::string& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_get_SensorTag_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_SensorTag_parseResponse(krpc::Response response, std::string& return_value)
+{
+  return true;
+}
+
+bool KRPCI::KSPSensor_set_SensorTag_createRequest(uint64_t KSPSensor_ID, std::string value, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_set_SensorTag");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  return true;
+}
+
+bool KRPCI::KSPSensor_set_SensorTag(uint64_t KSPSensor_ID, std::string value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_set_SensorTag_createRequest(KSPSensor_ID, value, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+
+bool KRPCI::KSPSensor_get_Operational_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_get_Operational");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Operational(uint64_t KSPSensor_ID, bool& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_get_Operational_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Operational_parseResponse(krpc::Response response, bool& return_value)
+{
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_PositionVector_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_get_PositionVector");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_PositionVector(uint64_t KSPSensor_ID, std::vector<uint64_t>& return_vector)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_get_PositionVector_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KSPSensor_get_PositionVector_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_PositionVector_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_LatLonAlt_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_get_LatLonAlt");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_LatLonAlt(uint64_t KSPSensor_ID, std::vector<uint64_t>& return_vector)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_get_LatLonAlt_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KSPSensor_get_LatLonAlt_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_LatLonAlt_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Speed_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("KSPSensor_get_Speed");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->mutable_value()->resize(10);
+  CodedOutputStream::WriteVarint64ToArray(KSPSensor_ID, 
+		      (unsigned char *)argument->mutable_value()->data());
+
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Speed(uint64_t KSPSensor_ID, double& return_value)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::KSPSensor_get_Speed_createRequest(KSPSensor_ID, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      KSPSensor_get_Speed_parseResponse(response, return_value);
+    }
+  return true;
+}
+
+bool KRPCI::KSPSensor_get_Speed_parseResponse(krpc::Response response, double& return_value)
+{
+  return_value = 0.0;
+  memcpy(&return_value, response.return_value().data(), response.return_value().size());
   return true;
 }
 

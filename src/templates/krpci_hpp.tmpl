@@ -58,6 +58,9 @@ public:
   bool Close();
 
   void SetName(std::string name);
+  void SetIP(std::string ip);
+  void SetPort(int port);
+  void SetStreamPort(int streamPort);
 
   // UTILITY FUNCTIONS
   static void PrintBytesHex(const char *buf, int size);
@@ -82,6 +85,9 @@ public:
   static bool ${procedure.name}_createRequest(krpc::Request& request);
 #end if 
   bool ${procedure.name}(${procedure.args});
+#if $procedure.output_args != ""
+  static bool ${procedure.name}_parseResponse(krpc::Response response, ${procedure.output_args});
+#end if
 #end for
 #end if
 #end for
@@ -103,4 +109,6 @@ private:
   int socket_;
   int streamSocket_;
   int timeout_;
+
+  bool connected_;
 };
