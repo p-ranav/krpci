@@ -6,22 +6,27 @@ kRPCI is a C++ client to kRPC for communicating with Kerbal Space Program (KSP).
 kRPCI Generator
 ---------------
 
-* The kRPC interface - krpci_generated.cpp and krpci.hpp files are completely generated from Cheetah templates in templates/*.tmpl
+The kRPCI interface code is completely generated using Cheetah templates. 
+
+* The templates reside in  src/templates/*.tmpl
 * Use krpci_generator.py to regenerate the client.
 * To test, you can use krpci_test.cpp and the Makefile
+
+Requirements:
+------------
+
+* Cheetah Templating Engine
+* Kerbal Space Program
+* kRPC
 
 Cheetah Templating Engine
 -------------------------
 
-* Regeneration requires the Cheetah Templating Engine.
+* kRPCI regeneration requires the Cheetah Templating Engine.
 * Download from: https://pypi.python.org/pypi/Cheetah/2.4.4
 * Extract this Cheetah-2.4.4.tar.gz
-* Install:
-
-```bash
-cd Cheetah-2.4.4
-sudo python setup.py install
-```
+* cd Cheetah-2.4.4
+* sudo python setup.py install
 
 Other Assumptions
 -----------------
