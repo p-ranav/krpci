@@ -169,7 +169,7 @@ hpp_namespace = {'hash_include' : '#include',
                  'services' : krpc_services}
 template = krpci_hpp(searchList=[hpp_namespace])
 hpp_file = str(template)
-with open(os.path.join(generator_dir, "krpci.hpp"), 'w') as temp_file:
+with open(os.path.join(generator_dir, "krpci/krpci.hpp"), 'w') as temp_file:
     temp_file.write(hpp_file)
 
 cpp_namespace = {'hash_include' : '#include',
