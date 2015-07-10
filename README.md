@@ -6,7 +6,7 @@ kRPCI is a C++ client to kRPC for communicating with Kerbal Space Program (KSP).
 Using the Client Library
 ------------------------
 
-* Copy the .cpp and .h files in src to your project directory
+* Copy the .cc, .cpp and .h files in src to your project directory
 * Instantiate a KRPCI client object and use the generated functions in krpci_generated.cpp
 * See krpci_test.cpp for a concrete example
 
