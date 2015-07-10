@@ -36,7 +36,7 @@ Other Assumptions
 * The script fetches all the services & procedures using the KSP interface and generates the API we need.
 * Then, krpci_test.cpp uses the generated KRPCI API (krpci_generated.cpp & krpci.hpp) to communicate with KSP
 
-Using the client library
+Using the Client Library
 ------------------------
 
 * Copy the .cpp and .h files in src to your project directory
