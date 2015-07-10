@@ -17,7 +17,7 @@ Requirements:
 
 * Cheetah Templating Engine
 * Kerbal Space Program
-* kRPC
+* kRPC and its dependencies
 
 Cheetah Templating Engine
 -------------------------
@@ -35,4 +35,11 @@ Other Assumptions
 * We expect an active vessel in flight (in focus, in the game)
 * The script fetches all the services & procedures using the KSP interface and generates the API we need.
 * Then, krpci_test.cpp uses the generated KRPCI API (krpci_generated.cpp & krpci.hpp) to communicate with KSP
+
+Using the client library
+------------------------
+
+* Copy the .cpp and .h files in src to your project directory
+* Instantiate a KRPCI client object and use the generated functions in krpci_generated.cpp
+* See krpci_test.cpp for a concrete example
 
