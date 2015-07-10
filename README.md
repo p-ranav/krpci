@@ -3,10 +3,17 @@ kRPCI
 
 kRPCI is a C++ client to kRPC for communicating with Kerbal Space Program (KSP). 
 
-kRPCI Generator
+Using the Client Library
+------------------------
+
+* Copy the .cpp and .h files in src to your project directory
+* Instantiate a KRPCI client object and use the generated functions in krpci_generated.cpp
+* See krpci_test.cpp for a concrete example
+
+Updating kRPCI
 ---------------
 
-The kRPCI interface code is completely generated using Cheetah templates. 
+The kRPCI interface code is completely generated using Cheetah templates. kRPCI can be updated for each new version of KSP by simply regenerating the interface.
 
 * The templates reside in  src/templates/*.tmpl
 * Use krpci_generator.py to regenerate the client.
@@ -36,10 +43,5 @@ Other Assumptions
 * The script fetches all the services & procedures using the KSP interface and generates the API we need.
 * Then, krpci_test.cpp uses the generated KRPCI API (krpci_generated.cpp & krpci.hpp) to communicate with KSP
 
-Using the Client Library
-------------------------
 
-* Copy the .cpp and .h files in src to your project directory
-* Instantiate a KRPCI client object and use the generated functions in krpci_generated.cpp
-* See krpci_test.cpp for a concrete example
 
