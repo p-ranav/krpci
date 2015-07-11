@@ -19569,6 +19569,61 @@ bool KRPCI::GetSensor_parseResponse(krpc::Response response, uint64_t& return_va
   return true;
 }
 
+bool KRPCI::LatLonAltToPos_createRequest(double lat, double lon, double alt, krpc::Request& request)
+{
+  request.set_service("Sensors");
+  request.set_procedure("LatLonAltToPos");
+  krpc::Argument* argument;
+  argument = request.add_arguments();
+  argument->set_position(0);
+  argument->set_value((const char*)(&lat), sizeof(lat));  
+
+  argument = request.add_arguments();
+  argument->set_position(1);
+  argument->set_value((const char*)(&lon), sizeof(lon));  
+
+  argument = request.add_arguments();
+  argument->set_position(2);
+  argument->set_value((const char*)(&alt), sizeof(alt));  
+
+  return true;
+}
+
+bool KRPCI::LatLonAltToPos(double lat, double lon, double alt, std::vector<uint64_t>& return_vector)
+{
+  if (!connected_)
+    return false;
+  krpc::Request request;
+  krpc::Response response;
+  KRPCI::LatLonAltToPos_createRequest(lat, lon, alt, request);
+
+  if (getResponseFromRequest(request,response))
+    {
+      if (response.has_error())
+	{
+	  std::cout << "Response error: " << response.error() << endl;
+	  return false;
+	}
+      LatLonAltToPos_parseResponse(response, return_vector);
+    }
+  return true;
+}
+
+bool KRPCI::LatLonAltToPos_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector)
+{
+  krpc::List output_list;
+  output_list.ParseFromString(response.return_value());
+  for(int i=0; i< output_list.items_size(); i++)
+    {
+      uint64_t return_value;
+      KRPCI::DecodeVarint(return_value,
+			  (char *)output_list.items(i).data(),
+			  output_list.items(i).size());
+      return_vector.push_back(return_value);
+    }
+  return true;
+}
+
 bool KRPCI::KSPSensor_Fail_createRequest(uint64_t KSPSensor_ID, krpc::Request& request)
 {
   request.set_service("Sensors");

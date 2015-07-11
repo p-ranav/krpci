@@ -1412,6 +1412,9 @@ public:
   static bool GetSensor_createRequest(std::string sTag, krpc::Request& request);
   bool GetSensor(std::string sTag, uint64_t& return_value);
   static bool GetSensor_parseResponse(krpc::Response response, uint64_t& return_value);
+  static bool LatLonAltToPos_createRequest(double lat, double lon, double alt, krpc::Request& request);
+  bool LatLonAltToPos(double lat, double lon, double alt, std::vector<uint64_t>& return_vector);
+  static bool LatLonAltToPos_parseResponse(krpc::Response response, std::vector<uint64_t>& return_vector);
   static bool KSPSensor_Fail_createRequest(uint64_t KSPSensor_ID, krpc::Request& request);
   bool KSPSensor_Fail(uint64_t KSPSensor_ID);
   static bool KSPSensor_Repair_createRequest(uint64_t KSPSensor_ID, krpc::Request& request);
