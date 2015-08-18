@@ -7,6 +7,8 @@ class myclass
 {
 public:
   myclass(int tmp=10) : myInstVar(tmp) {}
+  // SHOWING HOW A FUNCTION OF A CLASS CAN BE CALLED EVERY TIME A RESPONSE
+  // IS RECEIVED ON A SPECIFIC STREAM - IN THIS CASE A VELOCITY DATA STREAM
   void classStreamFunc(krpc::Response& response)
   {
     if ( response.has_error() )
@@ -22,6 +24,8 @@ public:
   int myInstVar;
 };
 
+// SHOWING HOW A REGULAR FUNCTION CAN BE CALLED EVERY TIME A RESPONSE
+// IS RECEIVED ON A SPECIFIC STREAM - IN THIS CASE A POSITION DATA STREAM
 void myStreamFunc(krpc::Response& response)
 {
   if ( response.has_error() )
@@ -92,7 +96,8 @@ int main(int argc, char** argv)
       client.Control_set_Roll(controlID,20.0);
       client.Control_set_Yaw(controlID,30.0);
 
-      // TEST STREAMS: THESE ARE UNNECESSARY, BUT ARE PROVIDED BY KRPC TO ALLOW PERIODIC REQUEST INVOCATION
+      // TEST STREAMS: THESE ARE NOT CRITICAL, BUT CAN BE USEFUL
+      // AND ARE PROVIDED BY KRPC TO ALLOW PERIODIC REQUEST INVOCATION
       // stream name can be anything, but must be unique for a given client (i.e. KRPCI)
       std::string streamName = "streamTest_Vessel_Position";
       krpc::Request request;
