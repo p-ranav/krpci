@@ -42,7 +42,6 @@ int main(int argc, char** argv)
   if ( client.Connect() )
     {
       // TEST SENSING: GETTING VESSEL, ORBIT, BODY PROPERTIES/CHILDREN
-      int numVessels;
       std::vector<uint64_t> vesselIDs;
       uint64_t vesselID;
       std::string vesselName;
