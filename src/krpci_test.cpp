@@ -44,54 +44,48 @@ int main(int argc, char** argv)
       // TEST SENSING: GETTING VESSEL, ORBIT, BODY PROPERTIES/CHILDREN
       int numVessels;
       std::vector<uint64_t> vesselIDs;
+      uint64_t vesselID;
+      std::string vesselName;
+      uint64_t orbitID;
+      double apoapsis;
+      double time;
+      uint64_t bodyID;
+      uint64_t orbitalRefFrame;
+      double position[3];
+      double velocity[3];
+      uint64_t controlID;
+
+      // GET DATA FROM KRPC
       client.get_Vessels(vesselIDs);
+      client.get_ActiveVessel(vesselID);
+      client.Vessel_get_Name(vesselID,vesselName);
+      client.Vessel_get_Orbit(vesselID, orbitID);
+      client.Orbit_get_ApoapsisAltitude(orbitID,apoapsis);
+      client.Orbit_get_TimeToApoapsis(orbitID,time);
+      client.Orbit_get_Body(orbitID, bodyID);
+      client.CelestialBody_get_ReferenceFrame(bodyID, orbitalRefFrame);
+      client.Vessel_Position(vesselID, orbitalRefFrame, position[0], position[1], position[2]);
+      client.Vessel_Velocity(vesselID, orbitalRefFrame, velocity[0], velocity[1], velocity[2]);
+      client.Vessel_get_Control(vesselID, controlID);
+
+      // PRINT RETRIEVED DATA
       std::cout << "There are " << vesselIDs.size() << " vessel(s):" << endl;
       for (int i=0;i<vesselIDs.size();i++)
 	{
 	  std::cout << "\tID #" << i+1 << " = " << vesselIDs[i] << endl;
 	}
-
-      uint64_t vesselID;
-      client.get_ActiveVessel(vesselID);
       std::cout << "Active vessel ID: " << vesselID << std::endl;
-
-      std::string vesselName;
-      client.Vessel_get_Name(vesselID,vesselName);
       std::cout << "Active vessel Name: " << vesselName << std::endl;
-
-      uint64_t orbitID;
-      client.Vessel_get_Orbit(vesselID, orbitID);
       std::cout << "Active vessel orbit: " << orbitID << endl;
-
-      double apoapsis;
-      client.Orbit_get_ApoapsisAltitude(orbitID,apoapsis);
       std::cout << "Active vessel orbit has apoapsis altitude: " << apoapsis << endl;
-
-      double time;
-      client.Orbit_get_TimeToApoapsis(orbitID,time);
       std::cout << "Active vessel reaches orbit apoapsis in: " << time << endl;
-
-      uint64_t bodyID;
-      client.Orbit_get_Body(orbitID, bodyID);
       std::cout << "Active vessel orbiting body: " << bodyID << std::endl;
-
-      uint64_t orbitalRefFrame;
-      client.CelestialBody_get_ReferenceFrame(bodyID, orbitalRefFrame);
       std::cout << "Orbiting body's Reference Frame ID: " << orbitalRefFrame << std::endl;
-
-      double position[3];
-      client.Vessel_Position(vesselID, orbitalRefFrame, position[0], position[1], position[2]);
       std::cout << "Active vessel Position: "<< position[0]<<","<<position[1]<<","<<position[2]<<endl;
-
-      double velocity[3];
-      client.Vessel_Velocity(vesselID, orbitalRefFrame, velocity[0], velocity[1], velocity[2]);
       std::cout << "Active vessel Velocity: "<< velocity[0]<<","<<velocity[1]<<","<<velocity[2]<<endl;
-
-      uint64_t controlID;
-      client.Vessel_get_Control(vesselID, controlID);
       std::cout << "Active vessel has control ID: " << controlID << endl;
 
-      // TEST CONTROLS : NEED A CONTROL OBJECT ASSOCIATED WITH A VESSEL
+      // TEST CONTROLS : NEED A CONTROL OBJECT (ID) ASSOCIATED WITH A VESSEL
       client.Control_set_SAS(controlID,true);
       client.Control_set_RCS(controlID,true);
       client.Control_set_Throttle(controlID,1.0);
