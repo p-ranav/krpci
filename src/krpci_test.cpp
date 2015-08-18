@@ -39,6 +39,7 @@ int main(int argc, char** argv)
   KRPCI client("wrapperTest");
   if ( client.Connect() )
     {
+      // TEST SENSING: GETTING VESSEL, ORBIT, BODY PROPERTIES/CHILDREN
       int numVessels;
       std::vector<uint64_t> vesselIDs;
       client.get_Vessels(vesselIDs);
@@ -47,36 +48,48 @@ int main(int argc, char** argv)
 	{
 	  std::cout << "\tID #" << i+1 << " = " << vesselIDs[i] << endl;
 	}
+
       uint64_t vesselID;
       client.get_ActiveVessel(vesselID);
       std::cout << "Active vessel ID: " << vesselID << std::endl;
+
       std::string vesselName;
       client.Vessel_get_Name(vesselID,vesselName);
       std::cout << "Active vessel Name: " << vesselName << std::endl;
+
       uint64_t orbitID;
       client.Vessel_get_Orbit(vesselID, orbitID);
       std::cout << "Active vessel orbit: " << orbitID << endl;
+
       double apoapsis;
       client.Orbit_get_ApoapsisAltitude(orbitID,apoapsis);
       std::cout << "Active vessel orbit has apoapsis altitude: " << apoapsis << endl;
+
       double time;
       client.Orbit_get_TimeToApoapsis(orbitID,time);
       std::cout << "Active vessel reaches orbit apoapsis in: " << time << endl;
+
       uint64_t bodyID;
       client.Orbit_get_Body(orbitID, bodyID);
       std::cout << "Active vessel orbiting body: " << bodyID << std::endl;
+
       uint64_t orbitalRefFrame;
       client.CelestialBody_get_ReferenceFrame(bodyID, orbitalRefFrame);
       std::cout << "Orbiting body's Reference Frame ID: " << orbitalRefFrame << std::endl;
+
       double position[3];
       client.Vessel_Position(vesselID, orbitalRefFrame, position[0], position[1], position[2]);
       std::cout << "Active vessel Position: "<< position[0]<<","<<position[1]<<","<<position[2]<<endl;
+
       double velocity[3];
       client.Vessel_Velocity(vesselID, orbitalRefFrame, velocity[0], velocity[1], velocity[2]);
       std::cout << "Active vessel Velocity: "<< velocity[0]<<","<<velocity[1]<<","<<velocity[2]<<endl;
+
       uint64_t controlID;
       client.Vessel_get_Control(vesselID, controlID);
       std::cout << "Active vessel has control ID: " << controlID << endl;
+
+      // TEST CONTROLS : NEED A CONTROL OBJECT ASSOCIATED WITH A VESSEL
       client.Control_set_SAS(controlID,true);
       client.Control_set_RCS(controlID,true);
       client.Control_set_Throttle(controlID,1.0);
@@ -84,6 +97,7 @@ int main(int argc, char** argv)
       client.Control_set_Roll(controlID,20.0);
       client.Control_set_Yaw(controlID,30.0);
 
+      // TEST STREAMS: THESE ARE UNNECESSARY, BUT ARE PROVIDED BY KRPC TO ALLOW PERIODIC REQUEST INVOCATION
       // stream name can be anything, but must be unique for a given client (i.e. KRPCI)
       std::string streamName = "streamTest_Vessel_Position";
       krpc::Request request;
@@ -104,6 +118,7 @@ int main(int argc, char** argv)
       client.RemoveStream(streamName);
 
       sleep(10);
+      // DONE TESTING STREAMS
     }
   client.Close();
 }
