@@ -2,6 +2,7 @@
 
 using namespace std;
 
+// FORWARD DECLARATIONS REQUIRED FOR STREAM TESTING
 class myclass
 {
 public:
@@ -34,6 +35,7 @@ void myStreamFunc(krpc::Response& response)
   printf("(x,y,z) = (%f,%f,%f)\n",x,y,z);
 }
 
+// THE MAIN TEST CODE
 int main(int argc, char** argv)
 {
   KRPCI client("wrapperTest");
@@ -122,3 +124,4 @@ int main(int argc, char** argv)
     }
   client.Close();
 }
+
